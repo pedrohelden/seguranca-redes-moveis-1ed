@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 7 – Diameter (4G) em Profundidade</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 7 – Diameter (4G) em Profundidade</h1>
+
+<p>Se o SS7 é o “sistema nervoso” das redes antigas, o <strong>Diameter</strong> é o cérebro da sinalização no 4G.</p>
+
+<p>Neste capítulo, você vai entender como o 4G funciona por dentro, por que ele é mais avançado que o SS7 — e por que ainda assim pode falhar de forma crítica.</p>
+
+<hr>
+
+<h2>7.1 O que é o Diameter?</h2>
+
+<p>O <strong>Diameter</strong> é o protocolo de sinalização usado no core do 4G (LTE). Ele controla:</p>
+
+<ul>
+<li>Autenticação de usuários</li>
+<li>Mobilidade (registro na rede)</li>
+<li>Políticas de uso (internet, QoS)</li>
+<li>Cobrança (billing)</li>
+</ul>
+
+<p><strong>Diferença para o SS7:</strong></p>
+
+<ul>
+<li>SS7 → baseado em confiança implícita</li>
+<li>Diameter → baseado em sessões e autenticação</li>
+</ul>
+
+<p>👉 Mas ainda depende de confiança entre operadoras.</p>
+
+<hr>
+
+<h2>7.2 Arquitetura do core 4G (LTE)</h2>
+
+<table>
+<tr>
+<th>Elemento</th>
+<th>Função</th>
+</tr>
+<tr>
+<td>MME</td>
+<td>Gerencia mobilidade e autenticação</td>
+</tr>
+<tr>
+<td>HSS</td>
+<td>Banco de dados do assinante</td>
+</tr>
+<tr>
+<td>SGW</td>
+<td>Roteia tráfego dentro da rede</td>
+</tr>
+<tr>
+<td>PGW</td>
+<td>Conecta à internet</td>
+</tr>
+<tr>
+<td>PCRF</td>
+<td>Define políticas e cobrança</td>
+</tr>
+</table>
+
+<p>👉 O Diameter conecta esses elementos.</p>
+
+<hr>
+
+<h2>7.3 Interfaces Diameter importantes</h2>
+
+<table>
+<tr><th>Interface</th><th>Conexão</th><th>Função</th></tr>
+<tr><td>S6a</td><td>MME ↔ HSS</td><td>Autenticação</td></tr>
+<tr><td>Gx</td><td>PGW ↔ PCRF</td><td>Políticas/QoS</td></tr>
+<tr><td>Gy</td><td>PGW ↔ OCS</td><td>Cobrança online</td></tr>
+<tr><td>Sh</td><td>AS ↔ HSS</td><td>Dados do usuário</td></tr>
+</table>
+
+<p>👉 Cada interface é uma possível superfície de ataque.</p>
+
+<hr>
+
+<h2>7.4 Fluxo real – registro na rede (Attach)</h2>
+
+<table>
+<tr><th>Passo</th><th>Ação</th></tr>
+<tr><td>1</td><td>UE conecta ao eNodeB</td></tr>
+<tr><td>2</td><td>MME envia Update Location (ULR)</td></tr>
+<tr><td>3</td><td>HSS responde com ULA</td></tr>
+<tr><td>4</td><td>Autenticação é realizada</td></tr>
+<tr><td>5</td><td>Sessão de dados é criada</td></tr>
+</table>
+
+<p>👉 Esse fluxo é crítico — qualquer falha aqui afeta todos os usuários.</p>
+
+<hr>
+
+<h2>7.5 Exemplo de mensagem Diameter</h2>
+
+<pre>
+Command: Update Location Request (ULR)
+IMSI: 724XXXXXXXXXXXX
+Visited-PLMN: 724XX
+</pre>
+
+<p>👉 Essa mensagem registra o usuário na rede.</p>
+
+<hr>
+
+<h2>7.6 O grande risco do Diameter</h2>
+
+<p>Embora seja mais moderno que o SS7, o Diameter tem problemas:</p>
+
+<ul>
+<li>Alta complexidade</li>
+<li>Dependência entre sistemas</li>
+<li>Retries automáticos</li>
+<li>Confiança entre parceiros (roaming)</li>
+</ul>
+
+<p>👉 Isso cria um cenário perfeito para falhas em escala.</p>
+
+<hr>
+
+<h2>7.7 Diameter Storm (em profundidade)</h2>
+
+<h3>⚠️ Definição</h3>
+
+<p>Um <strong>Diameter Storm</strong> ocorre quando há um volume massivo de mensagens que a rede não consegue processar.</p>
+
+<h3>🧠 Como começa?</h3>
+
+<ul>
+<li>Falha em um elemento (ex: HSS)</li>
+<li>Timeout de resposta</li>
+<li>MME reenvia requisições</li>
+</ul>
+
+<h3>🔗 Efeito cascata</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1</td><td>Falha inicial no HSS</td></tr>
+<tr><td>2</td><td>MME envia múltiplos retries</td></tr>
+<tr><td>3</td><td>Outros MMEs fazem o mesmo</td></tr>
+<tr><td>4</td><td>Volume explode exponencialmente</td></tr>
+<tr><td>5</td><td>Rede entra em colapso</td></tr>
+</table>
+
+<p><strong>Resultado:</strong></p>
+<ul>
+<li>Usuários não conseguem se conectar</li>
+<li>Sessões caem</li>
+<li>Rede fica instável</li>
+</ul>
+
+<hr>
+
+<h2>7.8 Ataque – overload intencional</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Derrubar a rede 4G</p>
+
+<h3>🔗 Kill chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Ação</th></tr>
+<tr><td>1</td><td>Atacante envia múltiplos requests</td></tr>
+<tr><td>2</td><td>Gera carga artificial</td></tr>
+<tr><td>3</td><td>Força retries automáticos</td></tr>
+<tr><td>4</td><td>Satura HSS/MME</td></tr>
+<tr><td>5</td><td>Rede colapsa</td></tr>
+</table>
+
+<hr>
+
+<h2>7.9 Ataque – manipulação de políticas (Gx)</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Alterar QoS ou cobrança</p>
+
+<h3>🔗 Fluxo</h3>
+
+<table>
+<tr><th>Etapa</th><th>Mensagem</th><th>Descrição</th></tr>
+<tr><td>1</td><td>CCR</td><td>Solicita política</td></tr>
+<tr><td>2</td><td>CCA</td><td>Resposta com regras</td></tr>
+<tr><td>3</td><td>Manipulação</td><td>QoS alterado</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> fraude ou degradação de serviço.</p>
+
+<hr>
+
+<h2>7.10 Ataque – vazamento de dados</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Acessar dados do assinante</p>
+
+<h3>🔗 Fluxo</h3>
+
+<table>
+<tr><th>Etapa</th><th>Interface</th><th>Descrição</th></tr>
+<tr><td>1</td><td>Sh</td><td>Consulta dados no HSS</td></tr>
+<tr><td>2</td><td>Resposta</td><td>Recebe perfil do usuário</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> exposição de dados sensíveis.</p>
+
+<hr>
+
+<h2>7.11 Como operadoras se defendem</h2>
+
+<table>
+<tr><th>Controle</th><th>Descrição</th></tr>
+<tr><td>Diameter Firewall</td><td>Filtra mensagens suspeitas</td></tr>
+<tr><td>Rate limiting</td><td>Evita storm</td></tr>
+<tr><td>Load balancing</td><td>Distribui carga</td></tr>
+<tr><td>Timeout tuning</td><td>Reduz retries</td></tr>
+<tr><td>Monitoramento</td><td>Detecta anomalias</td></tr>
+</table>
+
+<p><strong>Regra principal:</strong></p>
+<p>❌ Não confiar no comportamento da rede<br>
+✅ Assumir falhas e limitar impacto</p>
+
+<hr>
+
+<h2>7.12 Impacto no negócio</h2>
+
+<ul>
+<li>Queda de rede (milhões de usuários)</li>
+<li>Perda de receita</li>
+<li>Falhas em serviços críticos</li>
+<li>Danos à reputação</li>
+</ul>
+
+<p>👉 Diferente do SS7, aqui o problema é escala.</p>
+
+<hr>
+
+<h2>7.13 Conclusão</h2>
+
+<p>O Diameter trouxe avanços importantes, mas também novos riscos:</p>
+
+<ul>
+<li>Arquitetura mais segura</li>
+<li>Mas extremamente complexa</li>
+<li>E sensível a falhas em cascata</li>
+</ul>
+
+<p><strong>No 4G, o maior inimigo não é apenas o atacante — é o próprio efeito dominó da rede.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 7 – Diameter em Profundidade</p>
+</footer>
+
+</body>
+</html>

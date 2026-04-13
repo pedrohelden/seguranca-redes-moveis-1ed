@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 4 – Arquitetura de Defesa em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 4 – Arquitetura de Defesa em Redes Móveis</h1>
+
+<p>Depois de entender como os ataques funcionam (Capítulo 3), agora vamos responder a pergunta mais importante:</p>
+
+<p><strong>Como uma operadora realmente se protege?</strong></p>
+
+<p>Este capítulo mostra a arquitetura de defesa completa — do perímetro até o core — baseada em práticas reais do mercado.</p>
+
+---
+
+<h2>4.1 O problema da defesa tradicional</h2>
+
+<p>Muitas redes ainda seguem um modelo antigo:</p>
+
+<ul>
+<li>Confiam em redes parceiras</li>
+<li>Bloqueiam apenas ataques conhecidos</li>
+<li>Não analisam comportamento</li>
+</ul>
+
+<p>👉 Isso falha porque ataques modernos são:</p>
+
+<ul>
+<li>Sequenciais (kill chain)</li>
+<li>Disfarçados como tráfego legítimo</li>
+<li>Distribuídos entre várias redes</li>
+</ul>
+
+---
+
+<h2>4.2 Princípio moderno: Zero Trust Telecom</h2>
+
+<p>O modelo atual de segurança é baseado em:</p>
+
+<p><strong>“Nunca confiar, sempre verificar.”</strong></p>
+
+<table>
+<tr><th>Modelo antigo</th><th>Modelo moderno</th></tr>
+<tr><td>Confiança implícita</td><td>Validação contínua</td></tr>
+<tr><td>Bloqueio simples</td><td>Análise contextual</td></tr>
+<tr><td>Foco em perímetro</td><td>Defesa em camadas</td></tr>
+</table>
+
+---
+
+<h2>4.3 Arquitetura de defesa em camadas</h2>
+
+<p>A proteção eficiente acontece em múltiplos níveis:</p>
+
+<p>
+[ Rede Externa ] → [ Firewall ] → [ Core Network ] → [ Monitoramento ]
+</p>
+
+<p>Cada camada tem um papel específico.</p>
+
+---
+
+<h2>4.4 Camada 1 – Proteção de perímetro</h2>
+
+<h3>Objetivo:</h3>
+<p>Bloquear mensagens maliciosas antes de entrarem na rede.</p>
+
+<h3>Controles:</h3>
+
+<ul>
+<li>Firewall SS7</li>
+<li>Firewall Diameter</li>
+<li>API Gateway (5G)</li>
+</ul>
+
+<h3>O que é filtrado:</h3>
+
+<ul>
+<li>Mensagens de redes desconhecidas</li>
+<li>Comandos perigosos (ex: SendRoutingInfo)</li>
+<li>Tráfego fora do padrão</li>
+</ul>
+
+<p><strong>👉 Primeira linha de defesa.</strong></p>
+
+---
+
+<h2>4.5 Camada 2 – Validação de protocolo</h2>
+
+<h3>Objetivo:</h3>
+<p>Verificar se a mensagem faz sentido tecnicamente.</p>
+
+<h3>Exemplos:</h3>
+
+<ul>
+<li>IMSI pertence à rede de origem?</li>
+<li>O remetente pode enviar esse tipo de mensagem?</li>
+<li>O fluxo segue a sequência correta?</li>
+</ul>
+
+<table>
+<tr><th>Validação</th><th>Exemplo</th></tr>
+<tr><td>Origem</td><td>GT/Realm válido</td></tr>
+<tr><td>Consistência</td><td>IMSI vs MSISDN</td></tr>
+<tr><td>Sequência</td><td>Ordem correta de mensagens</td></tr>
+</table>
+
+<p><strong>👉 Bloqueia spoofing e manipulação lógica.</strong></p>
+
+---
+
+<h2>4.6 Camada 3 – Proteção contra ataques específicos</h2>
+
+<p>Aqui entram regras direcionadas para ataques conhecidos:</p>
+
+<table>
+<tr><th>Ataque</th><th>Mitigação</th></tr>
+<tr><td>AnyTimeInterrogation</td><td>Bloquear origem externa</td></tr>
+<tr><td>SendRoutingInfo</td><td>Permitir apenas parceiros confiáveis</td></tr>
+<tr><td>SendIMSI</td><td>Bloqueio total externo</td></tr>
+<tr><td>ProvideRoamingNumber</td><td>Validar IMSI vs origem</td></tr>
+</table>
+
+<p><strong>👉 Defesa baseada em assinatura.</strong></p>
+
+---
+
+<h2>4.7 Camada 4 – Monitoramento e detecção</h2>
+
+<h3>Objetivo:</h3>
+<p>Identificar ataques que passaram pelas outras camadas.</p>
+
+<h3>O que monitorar:</h3>
+
+<ul>
+<li>Padrões de tráfego</li>
+<li>Sequências suspeitas (kill chain)</li>
+<li>Volume anormal de mensagens</li>
+</ul>
+
+<h3>Exemplo:</h3>
+
+<p>
+SendIMSI → AnyTimeInterrogation → SendRoutingInfo
+</p>
+
+<p>👉 Isso indica ataque em andamento.</p>
+
+---
+
+<h2>4.8 Camada 5 – Resposta e contenção</h2>
+
+<p>Quando um ataque é detectado:</p>
+
+<ul>
+<li>Bloquear origem imediatamente</li>
+<li>Isolar elementos da rede</li>
+<li>Aplicar regras dinâmicas</li>
+</ul>
+
+<p><strong>👉 Tempo de resposta é crítico.</strong></p>
+
+---
+
+<h2>4.9 Defesa em 4G (Diameter)</h2>
+
+<p>Principais pontos de proteção:</p>
+
+<ul>
+<li>Validação de Realm</li>
+<li>Controle de mensagens AIR/ULA</li>
+<li>Proteção contra Diameter Storm</li>
+</ul>
+
+<table>
+<tr><th>Ataque</th><th>Mitigação</th></tr>
+<tr><td>Update Location falso</td><td>Validação de origem</td></tr>
+<tr><td>CCR Manipulation</td><td>Controle de charging</td></tr>
+<tr><td>Flood</td><td>Rate limiting</td></tr>
+</table>
+
+---
+
+<h2>4.10 Defesa em 5G (SBA)</h2>
+
+<p>No 5G, a segurança é baseada em APIs:</p>
+
+<ul>
+<li>Autenticação (OAuth2)</li>
+<li>Criptografia (TLS)</li>
+<li>Controle de acesso (API Gateway)</li>
+</ul>
+
+<table>
+<tr><th>Risco</th><th>Proteção</th></tr>
+<tr><td>Acesso indevido</td><td>Autenticação forte</td></tr>
+<tr><td>Exposição de dados</td><td>Controle de autorização</td></tr>
+<tr><td>API Flood</td><td>Rate limiting</td></tr>
+</table>
+
+---
+
+<h2>4.11 Correlação com Kill Chain</h2>
+
+<p>Uma defesa eficiente bloqueia cada etapa do ataque:</p>
+
+<table>
+<tr><th>Etapa</th><th>Defesa</th></tr>
+<tr><td>Identidade</td><td>Bloqueio de SendIMSI</td></tr>
+<tr><td>Localização</td><td>Filtro de ATI</td></tr>
+<tr><td>Controle</td><td>Validação de roteamento</td></tr>
+<tr><td>Exploração</td><td>Monitoramento e resposta</td></tr>
+</table>
+
+<p><strong>👉 O objetivo é quebrar a cadeia.</strong></p>
+
+---
+
+<h2>4.12 Explicação didática</h2>
+
+<p>Pense na rede como um prédio moderno com segurança:</p>
+
+<ul>
+<li><strong>Portaria:</strong> firewall</li>
+<li><strong>Crachá:</strong> autenticação</li>
+<li><strong>Câmeras:</strong> monitoramento</li>
+<li><strong>Segurança interna:</strong> validação lógica</li>
+</ul>
+
+<p>Se uma dessas falhar, o invasor entra.</p>
+
+---
+
+<h2>4.13 Principais erros das operadoras</h2>
+
+<ul>
+<li>Confiar em parceiros internacionais</li>
+<li>Focar só em firewall</li>
+<li>Não monitorar comportamento</li>
+<li>Regras muito permissivas</li>
+</ul>
+
+---
+
+<h2>4.14 Conclusão</h2>
+
+<p>Segurança em redes móveis exige:</p>
+
+<ul>
+<li>Defesa em camadas</li>
+<li>Validação constante</li>
+<li>Monitoramento ativo</li>
+</ul>
+
+<p><strong>👉 Não basta bloquear ataques — é preciso interromper a kill chain.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 4 – Arquitetura de Defesa</p>
+</footer>
+
+</body>
+</html>

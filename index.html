@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Índice – Segurança em Redes Móveis</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: #1e2a38;
+  color: #cbd5e1;
+  display: flex;
+}
+
+/* SIDEBAR FIXA */
+.sidebar {
+  width: 500px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+
+  background: #0f172a;
+  border-right: 1px solid #1f2a44;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 20px 14px 20px 20px;
+
+  overflow: hidden;
+}
+
+.sidebar-inner {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.sidebar-inner::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-inner::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 8px;
+}
+
+.sidebar h1 {
+  font-size: 18px;
+  color: #60a5fa;
+  margin-bottom: 15px;
+}
+
+.sidebar a {
+  display: block;
+  color: #93c5fd;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+  background: #1e293b;
+}
+
+/* ===== CONTEÚDO CENTRAL (MAIS LARGO AGORA) ===== */
+.content {
+  margin-left: 500px;
+
+  width: calc(100% - 900px); /* 👈 AQUI A MELHORIA REAL */
+  min-height: 100vh;
+
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+h1, h2, h3 {
+  color: #60a5fa;
+}
+
+.bloco {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: #293845;
+  border-left: 3px solid #3b82f6;
+  border-radius: 4px;
+}
+
+/* ===== COLUNA DA CAPA (DIREITA) ===== */
+.cover {
+  width: 400px;
+  height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  background: #0b1220;
+  border-left: 1px solid #1f2a44;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.cover img {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+footer {
+  margin-top: 30px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h1>📘 Índice</h1>
+
+  <div class="sidebar-inner">
+
+    <a href="cap01.html">Capítulo 1: Conceitos Básicos de Redes Móveis</a>
+    <a href="cap02.html">Capítulo 2: Segurança em Redes Móveis: Fundamentos e Modelo de Confiança</a>
+    <a href="cap03.html">Capítulo 3: Anatomia dos Ataques em Redes Móveis (Kill Chain)</a>
+    <a href="cap04.html">Capítulo 4: Superfície de Ataque em Redes Móveis</a>
+    <a href="cap05.html">Capítulo 5: Casos Reais e Incidentes em Operadoras</a>
+    <a href="cap06.html">Capítulo 6: SS7: Arquitetura e Vulnerabilidades</a>
+    <a href="cap07.html">Capítulo 7: Diameter em Redes 4G (LTE) na Prática</a>
+    <a href="cap08.html">Capítulo 8: Segurança no 5G: Service-Based Architecture (SBA)</a>
+    <a href="cap09.html">Capítulo 9: Arquitetura de Defesa em Redes Móveis</a>
+    <a href="cap10.html">Capítulo 10: Monitoramento, Detecção e Resposta a Ameaças</a>
+    <a href="cap11.html">Capítulo 11: Técnicas de Evasão em Redes Móveis</a>
+    <a href="cap12.html">Capítulo 12: Tooling e Engenharia de Ataques em Telecom</a>
+    <a href="cap13.html">Capítulo 13: Impacto de Segurança no Negócio e Regulatório</a>
+    <a href="cap14.html">Capítulo 14: Futuro da Segurança em Redes Móveis (5G Advanced e além)</a>
+
+  </div>
+</div>
+
+<!-- CONTEÚDO CENTRAL -->
+<div class="content">
+
+  <h2>📘 Segurança em Redes Móveis:</h2>
+  <h2>Ataques, Defesa e o Futuro do 5G</h2>
+
+  <div class="bloco">🔵 Fundamentos (Cap.1–2)</div>
+  <div class="bloco">🔴 Ataques (Cap.3–5)</div>
+  <div class="bloco">🟠 Protocolos (Cap.6–8)</div>
+  <div class="bloco">🛡️ Defesa (Cap.9–10)</div>
+  <div class="bloco">⚔️ Ataque Avançado (Cap.11–12)</div>
+  <div class="bloco">💼 Negócio (Cap.13)</div>
+  <div class="bloco">🔮 Futuro (Cap.14)</div>
+
+  <footer>
+    <p>📘 Pedro Helden, 2026</p>
+    <p>www.linkedin.com/in/pedrohelden</p>
+  </footer>
+
+</div>
+
+<!-- CAPA (DIREITA) -->
+<div class="cover">
+  <img src="capa.jpg" alt="Capa do livro">
+</div>
+
+</body>
+</html>

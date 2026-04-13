@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 12 – Tooling e Engenharia de Ataque em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 12 – Tooling e Engenharia de Ataque</h1>
+
+<p>Depois de entender como ataques funcionam e como burlam defesas, surge a pergunta mais importante:</p>
+
+<p><strong>👉 Como esses ataques são construídos na prática?</strong></p>
+
+<p>Este capítulo mostra a visão do atacante — não em nível de código, mas em <strong>arquitetura, processo e mentalidade</strong>.</p>
+
+<hr>
+
+<h2>12.1 O mindset do atacante</h2>
+
+<p>Um atacante não começa atacando. Ele segue uma lógica:</p>
+
+<ul>
+<li>Minimizar risco</li>
+<li>Maximizar retorno</li>
+<li>Parecer legítimo</li>
+<li>Evitar detecção</li>
+</ul>
+
+<p><strong>👉 Regra principal:</strong></p>
+
+<p><strong>“Se parece tráfego normal, passa.”</strong></p>
+
+<hr>
+
+<h2>12.2 Componentes de uma infraestrutura de ataque</h2>
+
+<p>Um ataque em redes móveis normalmente envolve:</p>
+
+<table>
+<tr>
+<th>Componente</th>
+<th>Função</th>
+</tr>
+
+<tr>
+<td>Acesso à rede</td>
+<td>Entrada em SS7 / Diameter / 5G</td>
+</tr>
+
+<tr>
+<td>Nó de signaling</td>
+<td>Geração de mensagens (MAP / Diameter)</td>
+</tr>
+
+<tr>
+<td>Camada de controle</td>
+<td>Orquestração do ataque</td>
+</tr>
+
+<tr>
+<td>Infraestrutura distribuída</td>
+<td>Rotação e evasão</td>
+</tr>
+</table>
+
+<p>👉 O ataque não é uma ação única — é um sistema.</p>
+
+<hr>
+
+<h2>12.3 Construção de um ataque (visão macro)</h2>
+
+<h3>Exemplo: rastreamento de usuário</h3>
+
+<pre>
+1. Identificar MSISDN alvo
+2. Obter IMSI (se necessário)
+3. Enviar requisição de localização
+4. Repetir em intervalos controlados
+</pre>
+
+<p><strong>Elementos importantes:</strong></p>
+
+<ul>
+<li>Controle de frequência</li>
+<li>Escolha da origem</li>
+<li>Validação de resposta</li>
+</ul>
+
+<hr>
+
+<h2>12.4 Engenharia de mensagens</h2>
+
+<p>O coração do ataque está nas mensagens de signaling.</p>
+
+<h3>Características exploradas:</h3>
+
+<ul>
+<li>Campos opcionais</li>
+<li>Parâmetros inconsistentes</li>
+<li>Comportamentos não documentados</li>
+</ul>
+
+<p><strong>Exemplo conceitual:</strong></p>
+
+<pre>
+Mensagem: consulta de localização
+Campos:
+- Identidade do assinante
+- Origem da requisição
+- Tipo de serviço
+</pre>
+
+<p>👉 Pequenas alterações mudam completamente o comportamento da rede.</p>
+
+<hr>
+
+<h2>12.5 Automação de ataques</h2>
+
+<p>Ataques modernos são automatizados.</p>
+
+<table>
+<tr>
+<th>Função</th>
+<th>Descrição</th>
+</tr>
+
+<tr>
+<td>Scanner</td>
+<td>Descobre alvos válidos</td>
+</tr>
+
+<tr>
+<td>Executor</td>
+<td>Envia mensagens de ataque</td>
+</tr>
+
+<tr>
+<td>Correlator</td>
+<td>Analisa respostas</td>
+</tr>
+
+<tr>
+<td>Scheduler</td>
+<td>Controla tempo e volume</td>
+</tr>
+</table>
+
+<p>👉 Isso permite ataques em larga escala.</p>
+
+<hr>
+
+<h2>12.6 Ataques em escala</h2>
+
+<p>Um atacante pode operar em diferentes níveis:</p>
+
+<ul>
+<li><strong>Individual:</strong> alvo específico</li>
+<li><strong>Batch:</strong> lista de usuários</li>
+<li><strong>Massivo:</strong> milhões de assinantes</li>
+</ul>
+
+<p><strong>Desafio para defesa:</strong></p>
+
+<p>👉 Diferenciar uso legítimo de ataque automatizado.</p>
+
+<hr>
+
+<h2>12.7 Infraestrutura distribuída</h2>
+
+<p>Para evitar bloqueios, ataques usam múltiplas origens:</p>
+
+<ul>
+<li>Diferentes redes</li>
+<li>Diferentes países</li>
+<li>Diferentes identidades</li>
+</ul>
+
+<p><strong>Resultado:</strong></p>
+
+<p>👉 Dificulta correlação e resposta.</p>
+
+<hr>
+
+<h2>12.8 Integração com evasão (Capítulo 11)</h2>
+
+<p>Tooling e evasão trabalham juntos.</p>
+
+<table>
+<tr>
+<th>Ferramenta</th>
+<th>Técnica de evasão</th>
+</tr>
+
+<tr>
+<td>Scheduler</td>
+<td>Low & slow</td>
+</tr>
+
+<tr>
+<td>Rotação de origem</td>
+<td>Bypass de blacklist</td>
+</tr>
+
+<tr>
+<td>Controle de payload</td>
+<td>Mensagens legítimas</td>
+</tr>
+</table>
+
+<p>👉 O ataque é adaptativo.</p>
+
+<hr>
+
+<h2>12.9 Exemplo completo (engenharia de ataque)</h2>
+
+<h3>Cenário: interceptação de OTP</h3>
+
+<pre>
+Fase 1:
+- Coletar MSISDN
+
+Fase 2:
+- Obter IMSI
+
+Fase 3:
+- Executar ataque de roteamento
+
+Fase 4:
+- Interceptar SMS
+
+Fase 5:
+- Manter persistência com baixo volume
+</pre>
+
+<p><strong>Pontos-chave:</strong></p>
+
+<ul>
+<li>Cada fase isolada parece legítima</li>
+<li>Execução distribuída</li>
+<li>Baixa visibilidade operacional</li>
+</ul>
+
+<hr>
+
+<h2>12.10 Limitações do atacante</h2>
+
+<p>Nem tudo é fácil para quem ataca:</p>
+
+<ul>
+<li>Dependência de acesso à rede</li>
+<li>Risco de detecção</li>
+<li>Complexidade técnica</li>
+<li>Dependência de infraestrutura</li>
+</ul>
+
+<p>👉 Isso também pode ser explorado na defesa.</p>
+
+<hr>
+
+<h2>12.11 O que a defesa deve aprender com isso</h2>
+
+<p>Entender o atacante muda tudo:</p>
+
+<ul>
+<li>Defesa deixa de ser reativa</li>
+<li>Passa a ser estratégica</li>
+<li>Antecipação de comportamento</li>
+</ul>
+
+<p><strong>👉 Nova mentalidade:</strong></p>
+
+<p><strong>“Se eu fosse atacar, como faria?”</strong></p>
+
+<hr>
+
+<h2>12.12 Conclusão</h2>
+
+<p>A engenharia de ataque mostra que:</p>
+
+<ul>
+<li>Ataques são planejados</li>
+<li>São automatizados</li>
+<li>Evoluem constantemente</li>
+</ul>
+
+<p><strong>👉 Defender exige o mesmo nível de sofisticação.</strong></p>
+
+<p>Quem entende o atacante… protege melhor.</p>
+
+<footer>
+<p>Fim do Capítulo 12 – Tooling e Engenharia de Ataque</p>
+</footer>
+
+</body>
+</html>

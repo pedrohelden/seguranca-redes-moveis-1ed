@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 2 – Segurança em Redes Móveis (SS7, 4G e 5G)</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+    vertical-align: top;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 2 – Segurança em Redes Móveis (SS7, 4G e 5G)</h1>
+
+<p>Agora que você já entende como as redes móveis funcionam, é hora de explorar um dos temas mais importantes — e menos visíveis — desse universo: <strong>a segurança</strong>.</p>
+
+<p>As redes móveis evoluíram muito em velocidade e capacidade, mas a segurança nem sempre acompanhou esse crescimento da mesma forma. Isso abriu espaço para ataques que podem afetar usuários, operadoras e até sistemas financeiros.</p>
+
+<h2>2.1 O problema fundamental</h2>
+
+<p><strong>“Todas as operadoras são confiáveis.”</strong></p>
+
+<p>👉 Resultado: redes externas podem enviar comandos maliciosos.</p>
+
+<h2>2.2 Evolução da segurança nas redes móveis</h2>
+
+<table>
+<tr><th>Geração</th><th>Protocolo</th><th>Modelo de segurança</th></tr>
+<tr><td>2G / 3G</td><td>SS7</td><td>Confiança implícita</td></tr>
+<tr><td>4G</td><td>Diameter</td><td>Confiança entre parceiros</td></tr>
+<tr><td>5G</td><td>APIs (HTTP/2)</td><td>Arquitetura baseada em serviços</td></tr>
+</table>
+
+<ul>
+<li>SS7 é vulnerável por design</li>
+<li>4G ainda confia em parceiros</li>
+<li>5G expõe funções via APIs</li>
+</ul>
+
+<h2>2.3 Metodologia de avaliação de risco</h2>
+
+<ul>
+<li>Severidade: Low (+1), Medium (+2), High (+3), Critical (+4)</li>
+<li>Uso de MSISDN: +2</li>
+<li>Impacto em localização: +3</li>
+<li>Impacto em interceptação: +3</li>
+<li>Origem externa: +2</li>
+</ul>
+
+<p>👉 Quanto maior o score, maior a prioridade.</p>
+
+<h2>2.4 Visão executiva de riscos</h2>
+
+<table>
+<tr><th>Categoria</th><th>Risco Médio</th><th>Impacto</th></tr>
+<tr><td>📍 Tracking</td><td>🔴 Muito Alto</td><td>Localização</td></tr>
+<tr><td>📡 Interceptação</td><td>🔴 Crítico</td><td>Chamadas/SMS</td></tr>
+<tr><td>🔓 Data Disclosure</td><td>🔴 Crítico</td><td>Dados</td></tr>
+<tr><td>💸 Fraude</td><td>🟠 Alto</td><td>Financeiro</td></tr>
+<tr><td>⚙️ DoS</td><td>🟠 Alto</td><td>Disponibilidade</td></tr>
+</table>
+
+<h2>2.5 Principais categorias de ataque</h2>
+
+<h3>📍 Tracking</h3>
+<table>
+<tr><th>Tecnologia</th><th>Exemplo</th><th>Score</th></tr>
+<tr><td>SS7</td><td>AnyTimeInterrogation</td><td>10/10</td></tr>
+<tr><td>4G</td><td>Provide Subscriber Info</td><td>9/10</td></tr>
+<tr><td>5G</td><td>APIs</td><td>7/10</td></tr>
+</table>
+
+<h3>📡 Interceptação</h3>
+<table>
+<tr><th>Tecnologia</th><th>Exemplo</th><th>Score</th></tr>
+<tr><td>SS7</td><td>SendRoutingInfo</td><td>10/10</td></tr>
+<tr><td>4G</td><td>Update Location</td><td>9/10</td></tr>
+<tr><td>5G</td><td>Controle sessão</td><td>7/10</td></tr>
+</table>
+
+<h3>🔓 Data Disclosure</h3>
+<table>
+<tr><th>Tecnologia</th><th>Exemplo</th><th>Score</th></tr>
+<tr><td>SS7</td><td>SendIMSI</td><td>10/10</td></tr>
+<tr><td>4G</td><td>AIR</td><td>9/10</td></tr>
+<tr><td>5G</td><td>APIs UDM</td><td>7/10</td></tr>
+</table>
+
+<h2>2.6 Prioridades</h2>
+
+<ul>
+<li>🔴 Crítico: Tracking e interceptação</li>
+<li>🟠 Alto: Fraude</li>
+<li>🟡 Médio: DoS</li>
+</ul>
+
+<h2>2.7 Explicação didática</h2>
+
+<ul>
+<li>SS7 = sem segurança</li>
+<li>4G = confiança parcial</li>
+<li>5G = APIs expostas</li>
+</ul>
+
+<h2>2.8 Proteção</h2>
+
+<ul>
+<li>Firewall SS7/Diameter</li>
+<li>Proteção de APIs</li>
+<li>Monitoramento</li>
+</ul>
+
+<h2>2.9 Conclusão</h2>
+
+<p>A segurança evoluiu, mas os riscos continuam.</p>
+
+<ul>
+<li>SS7 → vulnerável por design</li>
+<li>4G → vulnerável por confiança</li>
+<li>5G → vulnerável por APIs</li>
+</ul>
+
+<h2>2.10 Pontuação detalhada dos ataques</h2>
+
+<p>Abaixo estão exemplos reais com a pontuação explicada:</p>
+
+<table>
+<tr>
+<th>Ataque</th>
+<th>Score</th>
+<th>Como foi calculado</th>
+</tr>
+
+<tr>
+<td>AnyTimeInterrogation (MSISDN)</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+MSISDN (+2)<br>
+Localização (+3)<br>
+Externo (+2)<br>
+Total: 11 → 10
+</td>
+</tr>
+
+<tr>
+<td>SendRoutingInfo</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+Interceptação (+3)<br>
+MSISDN (+2)<br>
+Externo (+2)<br>
+Total: 11 → 10
+</td>
+</tr>
+
+<tr>
+<td>SendIdentification</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+IMSI exposure (+3)<br>
+Externo (+2)<br>
+Total: 9 → ajustado para 10
+</td>
+</tr>
+
+<tr>
+<td>ActivateSS</td>
+<td><strong>8/10</strong></td>
+<td>
+High (+3)<br>
+Fraude (+3)<br>
+Externo (+2)<br>
+Total: 8
+</td>
+</tr>
+
+<tr>
+<td>CAMEL InitiateCallAttempt</td>
+<td><strong>6/10</strong></td>
+<td>
+Medium (+2)<br>
+Fraude (+2)<br>
+Externo (+2)<br>
+Total: 6
+</td>
+</tr>
+
+<tr>
+<td>FailureReport</td>
+<td><strong>3/10</strong></td>
+<td>
+Low (+1)<br>
+Externo (+2)<br>
+Total: 3
+</td>
+</tr>
+
+</table>
+
+<p><strong>Interpretação:</strong></p>
+<ul>
+<li>9–10: crítico</li>
+<li>7–8: alto</li>
+<li>5–6: médio</li>
+<li>0–4: baixo</li>
+</ul>
+
+<footer>
+<p>Fim do Capítulo 2 – Segurança em Redes Móveis</p>
+</footer>
+
+</body>
+</html>
