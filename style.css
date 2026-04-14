@@ -69,13 +69,16 @@ body {
   box-sizing: border-box;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: #60a5fa;
 }
 
 .bloco {
   margin-top: 8px;
   padding: 8px 10px;
+
   background: #293845;
   border-left: 3px solid #3b82f6;
   border-radius: 4px;
@@ -85,6 +88,7 @@ h1, h2, h3 {
 .cover {
   width: 400px;
   height: 100vh;
+
   position: fixed;
   right: 0;
   top: 0;
@@ -103,8 +107,9 @@ h1, h2, h3 {
 .cover img {
   width: 100%;
   max-width: 340px;
+
   border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* MOBILE */
