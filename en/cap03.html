@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 3 – Kill Chain in Mobile Networks</title>
+
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 3 – How Attacks Actually Happen (Telecom Kill Chain)</h1>
+
+<p>In previous chapters, you learned how mobile networks work and what the main attacks are. Now we take a step further: understanding <strong>how these attacks are combined in practice</strong>.</p>
+
+<p>In the real world, attackers do not use isolated techniques. They follow a logical sequence, exploiting vulnerabilities in a chain. This sequence is called the <strong>Kill Chain</strong>.</p>
+
+---
+
+<h2>3.1 What is a Kill Chain?</h2>
+
+<p>A kill chain represents the stages of an attack, from reconnaissance to final impact.</p>
+
+<table>
+<tr><th>Stage</th><th>Objective</th></tr>
+<tr><td>Reconnaissance</td><td>Identify the target (e.g. phone number)</td></tr>
+<tr><td>Enumeration</td><td>Collect data (IMSI, location)</td></tr>
+<tr><td>Exploitation</td><td>Manipulate the network</td></tr>
+<tr><td>Impact</td><td>Interception, fraud, or DoS</td></tr>
+</table>
+
+<p>👉 Key idea: <strong>each stage enables the next one</strong>.</p>
+
+---
+
+<h2>3.2 Anatomy of a real attack (SMS interception)</h2>
+
+<h3>🎯 Goal: capture authentication code (OTP)</h3>
+
+<h3>Stage 1 – Reconnaissance</h3>
+
+<p>The attacker starts with a simple piece of data:</p>
+
+<ul>
+<li><code>MSISDN (phone number)</code></li>
+</ul>
+
+<p>This can be obtained easily (leaks, public records, etc.).</p>
+
+---
+
+<h3>Stage 2 – IMSI extraction</h3>
+
+<p>Network protocols allow querying the subscriber identity:</p>
+
+<ul>
+<li><code>SendIMSI</code></li>
+<li><code>SendIdentification</code></li>
+</ul>
+
+<p><strong>Result:</strong></p>
+<ul>
+<li>IMSI exposed</li>
+<li>Unique SIM identity revealed</li>
+</ul>
+
+<p>👉 The IMSI is more sensitive than the phone number — it identifies the user inside the network.</p>
+
+---
+
+<h3>Stage 3 – Location discovery</h3>
+
+<p>Now the attacker needs to know where the user is in the network:</p>
+
+<ul>
+<li><code>AnyTimeInterrogation</code></li>
+<li><code>ProvideSubscriberInfo</code></li>
+</ul>
+
+<p><strong>Result:</strong></p>
+<ul>
+<li>Current MSC/VLR</li>
+<li>Approximate region</li>
+</ul>
+
+<p>👉 This allows proper targeting of the attack.</p>
+
+---
+
+<h3>Stage 4 – Routing manipulation</h3>
+
+<p>This is where the main attack happens:</p>
+
+<ul>
+<li><code>SendRoutingInfo</code></li>
+<li><code>ProvideRoamingNumber</code></li>
+</ul>
+
+<p><strong>Result:</strong></p>
+<ul>
+<li>Calls/SMS redirected</li>
+<li>Traffic passes through attacker-controlled entity</li>
+</ul>
+
+---
+
+<h3>Stage 5 – Interception</h3>
+
+<p>With routing manipulated:</p>
+
+<ul>
+<li>Bank SMS messages are captured</li>
+<li>OTP codes are stolen</li>
+<li>Accounts can be compromised</li>
+</ul>
+
+<p><strong>💥 Final impact:</strong> breakdown of two-factor authentication.</p>
+
+---
+
+<h2>3.3 Simplified technical flow</h2>
+
+<p>Sequence visualization:</p>
+
+<p>
+MSISDN → IMSI → Location → Routing → Interception
+</p>
+
+<p>👉 Each step depends on the previous one. Without IMSI, no location. Without location, no redirection.</p>
+
+---
+
+<h2>3.4 Another scenario: fraud</h2>
+
+<h3>🎯 Goal: generate unauthorized charges</h3>
+
+<ol>
+<li>Use of <code>CAMEL InitiateCallAttempt</code></li>
+<li>Activation of services via <code>ActivateSS</code></li>
+<li>Manipulation of billing logic</li>
+</ol>
+
+<p><strong>Result:</strong></p>
+<ul>
+<li>Unauthorized calls</li>
+<li>Financial impact on the operator</li>
+</ul>
+
+---
+
+<h2>3.5 Attacks in 4G (Diameter)</h2>
+
+<p>Even with evolution, the kill chain logic remains:</p>
+
+<table>
+<tr><th>Stage</th><th>Example</th></tr>
+<tr><td>Enumeration</td><td>Authentication Information Request (AIR)</td></tr>
+<tr><td>Manipulation</td><td>Fake Update Location</td></tr>
+<tr><td>Impact</td><td>Session interception</td></tr>
+</table>
+
+<p>👉 The protocol changes, but the attack logic remains the same.</p>
+
+---
+
+<h2>3.6 Attacks in 5G (SBA / APIs)</h2>
+
+<p>In 5G, attacks target APIs:</p>
+
+<ol>
+<li>Unauthorized API access</li>
+<li>Subscriber database queries</li>
+<li>Session manipulation</li>
+</ol>
+
+<p><strong>Impact:</strong></p>
+<ul>
+<li>Data leakage</li>
+<li>Session control abuse</li>
+</ul>
+
+---
+
+<h2>3.7 Universal attack pattern</h2>
+
+<table>
+<tr><th>Phase</th><th>Objective</th></tr>
+<tr><td>Identity</td><td>Discover IMSI</td></tr>
+<tr><td>Location</td><td>Find user position</td></tr>
+<tr><td>Control</td><td>Manipulate routing</td></tr>
+<tr><td>Exploitation</td><td>Intercept or fraud</td></tr>
+</table>
+
+<p><strong>👉 This pattern repeats across 2G, 3G, 4G, and 5G.</strong></p>
+
+---
+
+<h2>3.8 Where operators can block attacks</h2>
+
+<h3>🔴 Network entry</h3>
+<ul>
+<li>Signaling firewalls</li>
+<li>Blocking external messages</li>
+</ul>
+
+<h3>🟠 Logical validation</h3>
+<ul>
+<li>Consistency checks (IMSI vs origin)</li>
+<li>Routing validation</li>
+</ul>
+
+<h3>🟡 Monitoring</h3>
+<ul>
+<li>Attack pattern detection</li>
+<li>Behavior analysis</li>
+</ul>
+
+---
+
+<h2>3.9 Simple analogy</h2>
+
+<p>Think of the network as a building:</p>
+
+<ul>
+<li><strong>SS7:</strong> anyone can enter</li>
+<li><strong>4G:</strong> trusted visitors only</li>
+<li><strong>5G:</strong> modern digital access system</li>
+</ul>
+
+<p>The attacker:</p>
+
+<ol>
+<li>enters</li>
+<li>observes</li>
+<li>discovers identity</li>
+<li>takes control</li>
+</ol>
+
+---
+
+<h2>3.10 Most important insight</h2>
+
+<p><strong>The real risk is not a single attack.</strong></p>
+
+<p><strong>It is the combination of multiple steps.</strong></p>
+
+<p>👉 Effective security must break the entire chain, not just individual events.</p>
+
+---
+
+<h2>3.11 Conclusion</h2>
+
+<p>Mobile networks are complex systems, but attacks follow a simple logic:</p>
+
+<ul>
+<li>Discover</li>
+<li>Locate</li>
+<li>Control</li>
+<li>Exploit</li>
+</ul>
+
+<p>Understanding this sequence is essential for effective defense.</p>
+
+<footer>
+<p>End of Chapter 3 – Kill Chain in Mobile Networks</p>
+</footer>
+
+</body>
+</html>

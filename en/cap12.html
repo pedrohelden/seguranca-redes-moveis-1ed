@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 12 – Tooling and Attack Engineering in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 12 – Tooling and Attack Engineering</h1>
+
+<p>After understanding how attacks work and how they bypass defenses, the most important question arises:</p>
+
+<p><strong>👉 How are these attacks actually built in practice?</strong></p>
+
+<p>This chapter shows the attacker’s perspective — not in terms of code, but in terms of <strong>architecture, process, and mindset</strong>.</p>
+
+<hr>
+
+<h2>12.1 The attacker mindset</h2>
+
+<p>An attacker does not start by attacking. They follow a logic:</p>
+
+<ul>
+<li>Minimize risk</li>
+<li>Maximize return</li>
+<li>Appear legitimate</li>
+<li>Avoid detection</li>
+</ul>
+
+<p><strong>👉 Core rule:</strong></p>
+
+<p><strong>“If it looks like normal traffic, it gets through.”</strong></p>
+
+<hr>
+
+<h2>12.2 Components of an attack infrastructure</h2>
+
+<p>An attack in mobile networks typically involves:</p>
+
+<table>
+<tr>
+<th>Component</th>
+<th>Function</th>
+</tr>
+
+<tr>
+<td>Network access</td>
+<td>Entry into SS7 / Diameter / 5G</td>
+</tr>
+
+<tr>
+<td>Signaling node</td>
+<td>Message generation (MAP / Diameter)</td>
+</tr>
+
+<tr>
+<td>Control layer</td>
+<td>Attack orchestration</td>
+</tr>
+
+<tr>
+<td>Distributed infrastructure</td>
+<td>Rotation and evasion</td>
+</tr>
+</table>
+
+<p>👉 An attack is not a single action — it is a system.</p>
+
+<hr>
+
+<h2>12.3 Building an attack (macro view)</h2>
+
+<h3>Example: user tracking</h3>
+
+<pre>
+1. Identify target MSISDN
+2. Obtain IMSI (if needed)
+3. Send location request
+4. Repeat at controlled intervals
+</pre>
+
+<p><strong>Key elements:</strong></p>
+
+<ul>
+<li>Frequency control</li>
+<li>Source selection</li>
+<li>Response validation</li>
+</ul>
+
+<hr>
+
+<h2>12.4 Message engineering</h2>
+
+<p>The core of the attack lies in signaling messages.</p>
+
+<h3>Exploited characteristics:</h3>
+
+<ul>
+<li>Optional fields</li>
+<li>Inconsistent parameters</li>
+<li>Undocumented behaviors</li>
+</ul>
+
+<p><strong>Conceptual example:</strong></p>
+
+<pre>
+Message: location query
+Fields:
+- Subscriber identity
+- Request origin
+- Service type
+</pre>
+
+<p>👉 Small changes can completely alter network behavior.</p>
+
+<hr>
+
+<h2>12.5 Attack automation</h2>
+
+<p>Modern attacks are automated.</p>
+
+<table>
+<tr>
+<th>Function</th>
+<th>Description</th>
+</tr>
+
+<tr>
+<td>Scanner</td>
+<td>Finds valid targets</td>
+</tr>
+
+<tr>
+<td>Executor</td>
+<td>Sends attack messages</td>
+</tr>
+
+<tr>
+<td>Correlator</td>
+<td>Analyzes responses</td>
+</tr>
+
+<tr>
+<td>Scheduler</td>
+<td>Controls timing and volume</td>
+</tr>
+</table>
+
+<p>👉 This enables large-scale attacks.</p>
+
+<hr>
+
+<h2>12.6 Attacks at scale</h2>
+
+<p>An attacker can operate at different levels:</p>
+
+<ul>
+<li><strong>Individual:</strong> specific target</li>
+<li><strong>Batch:</strong> list of users</li>
+<li><strong>Massive:</strong> millions of subscribers</li>
+</ul>
+
+<p><strong>Defense challenge:</strong></p>
+
+<p>👉 Distinguish legitimate usage from automated attacks.</p>
+
+<hr>
+
+<h2>12.7 Distributed infrastructure</h2>
+
+<p>To avoid blocking, attacks use multiple origins:</p>
+
+<ul>
+<li>Different networks</li>
+<li>Different countries</li>
+<li>Different identities</li>
+</ul>
+
+<p><strong>Result:</strong></p>
+
+<p>👉 Harder correlation and response.</p>
+
+<hr>
+
+<h2>12.8 Integration with evasion (Chapter 11)</h2>
+
+<p>Tooling and evasion work together.</p>
+
+<table>
+<tr>
+<th>Tool</th>
+<th>Evasion technique</th>
+</tr>
+
+<tr>
+<td>Scheduler</td>
+<td>Low & slow</td>
+</tr>
+
+<tr>
+<td>Origin rotation</td>
+<td>Blacklist bypass</td>
+</tr>
+
+<tr>
+<td>Payload control</td>
+<td>Legitimate messages</td>
+</tr>
+</table>
+
+<p>👉 The attack is adaptive.</p>
+
+<hr>
+
+<h2>12.9 Full example (attack engineering)</h2>
+
+<h3>Scenario: OTP interception</h3>
+
+<pre>
+Phase 1:
+- Collect MSISDN
+
+Phase 2:
+- Obtain IMSI
+
+Phase 3:
+- Execute routing attack
+
+Phase 4:
+- Intercept SMS
+
+Phase 5:
+- Maintain persistence with low volume
+</pre>
+
+<p><strong>Key points:</strong></p>
+
+<ul>
+<li>Each phase alone looks legitimate</li>
+<li>Distributed execution</li>
+<li>Low operational visibility</li>
+</ul>
+
+<hr>
+
+<h2>12.10 Attacker limitations</h2>
+
+<p>Not everything is easy for attackers:</p>
+
+<ul>
+<li>Dependency on network access</li>
+<li>Risk of detection</li>
+<li>Technical complexity</li>
+<li>Infrastructure requirements</li>
+</ul>
+
+<p>👉 These can also be leveraged for defense.</p>
+
+<hr>
+
+<h2>12.11 What defenders should learn from this</h2>
+
+<p>Understanding the attacker changes everything:</p>
+
+<ul>
+<li>Defense becomes proactive</li>
+<li>Shifts to strategic thinking</li>
+<li>Enables behavior anticipation</li>
+</ul>
+
+<p><strong>👉 New mindset:</strong></p>
+
+<p><strong>“If I were the attacker, how would I do it?”</strong></p>
+
+<hr>
+
+<h2>12.12 Conclusion</h2>
+
+<p>Attack engineering shows that:</p>
+
+<ul>
+<li>Attacks are planned</li>
+<li>They are automated</li>
+<li>They constantly evolve</li>
+</ul>
+
+<p><strong>👉 Defense requires the same level of sophistication.</strong></p>
+
+<p>Those who understand the attacker… defend better.</p>
+
+<footer>
+<p>End of Chapter 12 – Tooling and Attack Engineering</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 11 – Security Evasion in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 11 – Security Evasion in Mobile Networks (Firewall Bypass)</h1>
+
+<p>So far, you have seen how networks are protected. But there is an important reality:</p>
+
+<p><strong>👉 Firewalls are not perfect.</strong></p>
+
+<p>Experienced attackers do not try to break the network directly — they <strong>bypass the protections</strong>.</p>
+
+<p>This chapter explains exactly how that happens.</p>
+
+<hr>
+
+<h2>11.1 The fundamental problem</h2>
+
+<p>Telecom firewalls (SS7, Diameter, 5G) are based on:</p>
+
+<ul>
+<li>Rules (allow / block)</li>
+<li>Trust lists</li>
+<li>Message validation</li>
+</ul>
+
+<p>👉 The problem:</p>
+
+<p><strong>If something looks legitimate, it is usually allowed.</strong></p>
+
+<p>And that is exactly what attackers exploit.</p>
+
+<hr>
+
+<h2>11.2 Main evasion techniques</h2>
+
+<h3>1. Trust abuse</h3>
+
+<p>The attacker routes traffic through a trusted operator.</p>
+
+<p>Flow:</p>
+
+<pre>
+Attacker → Trusted intermediate operator → Target network
+</pre>
+
+<p>👉 The firewall accepts it because the origin is trusted.</p>
+
+<p><strong>Impact:</strong></p>
+
+<ul>
+<li>Bypass of origin filtering</li>
+<li>Attacks appear legitimate</li>
+</ul>
+
+<hr>
+
+<h3>2. Identity manipulation (spoofing)</h3>
+
+<p>Modification of parameters such as:</p>
+
+<ul>
+<li>MSISDN</li>
+<li>IMSI</li>
+<li>Global Title</li>
+</ul>
+
+<p>👉 Goal: appear as a legitimate network element.</p>
+
+<p><strong>Example:</strong></p>
+
+<pre>
+Real origin: external network
+Presented identity: internal network
+</pre>
+
+<hr>
+
+<h3>3. Abuse of legitimate messages</h3>
+
+<p>Instead of using “malicious” messages, attackers misuse valid ones.</p>
+
+<table>
+<tr><th>Message</th><th>Legitimate use</th><th>Malicious use</th></tr>
+<tr><td>ATI</td><td>Location query</td><td>Tracking</td></tr>
+<tr><td>SRI</td><td>Routing</td><td>Interception</td></tr>
+<tr><td>ULR</td><td>Registration</td><td>Flood / DoS</td></tr>
+</table>
+
+<p>👉 This makes detection very difficult.</p>
+
+<hr>
+
+<h3>4. Low & slow attacks</h3>
+
+<p>Instead of high volume, attackers use low frequency:</p>
+
+<ul>
+<li>One request per minute</li>
+<li>Different targets</li>
+<li>Distributed pattern</li>
+</ul>
+
+<p>👉 Result:</p>
+
+<p><strong>It bypasses volume-based detection systems.</strong></p>
+
+<hr>
+
+<h3>5. Attack fragmentation</h3>
+
+<p>The attack is split into multiple steps:</p>
+
+<pre>
+Step 1: obtain IMSI
+Step 2: obtain location
+Step 3: intercept communication
+</pre>
+
+<p>Each step alone looks harmless.</p>
+
+<p>👉 Together, they form a full attack.</p>
+
+<hr>
+
+<h3>6. Origin rotation</h3>
+
+<p>The attacker constantly changes:</p>
+
+<ul>
+<li>IP address</li>
+<li>Origin operator</li>
+<li>Network identity</li>
+</ul>
+
+<p>👉 This defeats blacklist mechanisms.</p>
+
+<hr>
+
+<h2>11.3 Evasion in SS7</h2>
+
+<table>
+<tr><th>Technique</th><th>Description</th></tr>
+<tr><td>GT spoofing</td><td>Fake signaling address</td></tr>
+<tr><td>Indirect routing</td><td>Use of intermediate STPs</td></tr>
+<tr><td>Disguised ATI</td><td>Appears as legitimate query</td></tr>
+</table>
+
+<p>👉 Even with firewalls, attacks can still pass.</p>
+
+<hr>
+
+<h2>11.4 Evasion in Diameter (4G)</h2>
+
+<table>
+<tr><th>Technique</th><th>Description</th></tr>
+<tr><td>Session reuse</td><td>Use of valid sessions</td></tr>
+<tr><td>CCR manipulation</td><td>Charging alteration</td></tr>
+<tr><td>Flood control bypass</td><td>Load distribution</td></tr>
+</table>
+
+<p>👉 Attacks blend into legitimate traffic.</p>
+
+<hr>
+
+<h2>11.5 Evasion in 5G (SBA)</h2>
+
+<p>In 5G, the focus is APIs.</p>
+
+<table>
+<tr><th>Technique</th><th>Description</th></tr>
+<tr><td>Token abuse</td><td>Misuse of valid tokens</td></tr>
+<tr><td>API chaining</td><td>Combination of multiple APIs</td></tr>
+<tr><td>Rate-limit bypass</td><td>Request distribution</td></tr>
+</table>
+
+<p>👉 The attack looks like normal system usage.</p>
+
+<hr>
+
+<h2>11.6 Full bypass example</h2>
+
+<h3>Scenario: SMS interception</h3>
+
+<pre>
+1. Obtain IMSI (SendIMSI)
+2. Send SRI via trusted network
+3. Redirect SMS
+4. Maintain low frequency
+</pre>
+
+<p><strong>Why it works?</strong></p>
+
+<ul>
+<li>Trusted origin</li>
+<li>Legitimate messages</li>
+<li>No suspicious volume</li>
+</ul>
+
+<p><strong>Result:</strong></p>
+
+<p>👉 Interception without immediate detection</p>
+
+<hr>
+
+<h2>11.7 Why firewalls fail</h2>
+
+<ul>
+<li>Over-trust in partners</li>
+<li>Static rule-based logic</li>
+<li>Lack of event correlation</li>
+<li>Single-layer visibility</li>
+</ul>
+
+<p>👉 Security based only on blocking is not enough.</p>
+
+<hr>
+
+<h2>11.8 How to defend against evasion</h2>
+
+<p>Defense against evasion requires higher maturity:</p>
+
+<ul>
+<li>Event correlation (multi-step attacks)</li>
+<li>Behavioral analysis</li>
+<li>Strong origin validation</li>
+<li>Zero Trust approach</li>
+<li>Continuous monitoring</li>
+</ul>
+
+<p><strong>👉 The rule changes:</strong></p>
+
+<p><strong>“It is not enough to block the attack — you must understand the behavior.”</strong></p>
+
+<hr>
+
+<h2>11.9 Conclusion</h2>
+
+<p>Attackers constantly evolve. Evasion proves that.</p>
+
+<ul>
+<li>Firewalls are necessary</li>
+<li>But not sufficient</li>
+</ul>
+
+<p><strong>👉 True defense lies in visibility, intelligence, and correlation.</strong></p>
+
+<footer>
+<p>End of Chapter 11 – Security Evasion</p>
+</footer>
+
+</body>
+</html>

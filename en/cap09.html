@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 9 – Defense Architecture in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 9 – Defense Architecture in Mobile Networks</h1>
+
+<p>After understanding how attacks work and how protocols operate, we reach the most critical point for any operator:</p>
+
+<p><strong>How do you design an architecture that can truly resist attacks?</strong></p>
+
+<p>This chapter shows how defense is built in practice — not as theory, but as real network architecture.</p>
+
+<hr>
+
+<h2>9.1 The trust problem</h2>
+
+<p>Historically, mobile networks were built on trust:</p>
+
+<ul>
+<li>SS7 trusts any connected network</li>
+<li>4G trusts roaming partners</li>
+<li>5G trusts service-to-service authentication</li>
+</ul>
+
+<p>👉 This model has failed.</p>
+
+<p><strong>Modern architecture must assume any source can be malicious.</strong></p>
+
+<hr>
+
+<h2>9.2 Core principle: Zero Trust in Telecom</h2>
+
+<p>Zero Trust means:</p>
+
+<ul>
+<li>Validate every message</li>
+<li>Verify identity and context</li>
+<li>Apply explicit policies</li>
+</ul>
+
+<p>In practice:</p>
+
+<ul>
+<li>Do not automatically trust SS7 GT</li>
+<li>Do not trust Diameter peers</li>
+<li>Do not trust internal 5G APIs</li>
+</ul>
+
+<hr>
+
+<h2>9.3 Layered defense architecture</h2>
+
+<p>Effective security is not built on a single component — it is distributed.</p>
+
+<table>
+<tr>
+<th>Layer</th>
+<th>Function</th>
+<th>Example control</th>
+</tr>
+<tr>
+<td>Interconnect</td>
+<td>Entry control</td>
+<td>SS7/Diameter Firewall</td>
+</tr>
+<tr>
+<td>Core</td>
+<td>Logical validation</td>
+<td>HLR/HSS/UDM checks</td>
+</tr>
+<tr>
+<td>Application</td>
+<td>Access control</td>
+<td>OAuth / API Gateway</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Detection</td>
+<td>SOC / Analytics</td>
+</tr>
+</table>
+
+<p>👉 Real defense = multiple layers working together.</p>
+
+<hr>
+
+<h2>9.4 SS7 Firewall (2G/3G)</h2>
+
+<p>The SS7 Firewall is the first line of defense against legacy attacks.</p>
+
+<h3>Main functions:</h3>
+
+<ul>
+<li>Filter by message type (MAP/CAP)</li>
+<li>Validate Global Title (GT)</li>
+<li>Control by country or operator</li>
+<li>Inspect parameters (IMSI, MSISDN)</li>
+</ul>
+
+<h3>Blocking examples:</h3>
+
+<table>
+<tr>
+<th>Attack</th>
+<th>Firewall action</th>
+</tr>
+<tr>
+<td>AnyTimeInterrogation</td>
+<td>Block external origin</td>
+</tr>
+<tr>
+<td>SendIMSI</td>
+<td>Deny response</td>
+</tr>
+<tr>
+<td>SendRoutingInfo</td>
+<td>Allow only trusted partners</td>
+</tr>
+</table>
+
+<p><strong>Important limitation:</strong></p>
+
+<p>The SS7 Firewall depends on rules — and rules can be bypassed.</p>
+
+<hr>
+
+<h2>9.5 Diameter Firewall (4G)</h2>
+
+<p>In 4G, protection operates at the Diameter protocol level.</p>
+
+<h3>Functions:</h3>
+
+<ul>
+<li>Peer validation (realm, host)</li>
+<li>Session control</li>
+<li>Rate limiting</li>
+<li>Storm detection</li>
+</ul>
+
+<h3>Examples:</h3>
+
+<ul>
+<li>Block excessive <code>ULR</code></li>
+<li>Validate <code>CCR</code> to prevent fraud</li>
+<li>Detect signaling loops</li>
+</ul>
+
+<p><strong>Key point:</strong></p>
+
+<p>Diameter is more structured than SS7, but still relies on trust between networks.</p>
+
+<hr>
+
+<h2>9.6 5G protection (API Security)</h2>
+
+<p>In 5G, security shifts completely: now we are protecting APIs.</p>
+
+<h3>Main components:</h3>
+
+<ul>
+<li>API Gateway</li>
+<li>Service Mesh</li>
+<li>OAuth2 authentication</li>
+<li>mTLS (mutual TLS)</li>
+</ul>
+
+<h3>Secure flow:</h3>
+
+<ol>
+<li>Service requests token</li>
+<li>Token is validated</li>
+<li>Communication occurs via mTLS</li>
+<li>Request is audited</li>
+</ol>
+
+<p>👉 This brings telecom closer to cloud and microservices.</p>
+
+<hr>
+
+<h2>9.7 Allow-list vs Block-list</h2>
+
+<p>There are two main control models:</p>
+
+<table>
+<tr>
+<th>Model</th>
+<th>Description</th>
+<th>Risk</th>
+</tr>
+<tr>
+<td>Block-list</td>
+<td>Blocks known malicious behavior</td>
+<td>High (new attacks may pass)</td>
+</tr>
+<tr>
+<td>Allow-list</td>
+<td>Allows only explicitly authorized behavior</td>
+<td>Low (safer approach)</td>
+</tr>
+</table>
+
+<p><strong>Best practice:</strong></p>
+
+<p>👉 Use allow-list whenever possible.</p>
+
+<hr>
+
+<h2>9.8 Context validation (the key secret)</h2>
+
+<p>It is not enough to inspect a message — you must understand context.</p>
+
+<h3>Examples:</h3>
+
+<ul>
+<li>Does IMSI belong to the network?</li>
+<li>Does the message origin make sense?</li>
+<li>Is the user roaming?</li>
+</ul>
+
+<p>👉 Many attacks succeed because they look “valid” individually.</p>
+
+<hr>
+
+<h2>9.9 Network segmentation</h2>
+
+<p>An essential practice:</p>
+
+<ul>
+<li>Separate internal and external traffic</li>
+<li>Isolate critical functions (HLR, HSS, UDM)</li>
+<li>Control cross-domain access</li>
+</ul>
+
+<p>👉 Reduces impact of intrusions.</p>
+
+<hr>
+
+<h2>9.10 Rate limiting and abuse protection</h2>
+
+<p>Fundamental against volumetric attacks:</p>
+
+<ul>
+<li>Limit requests per second</li>
+<li>Detect abnormal spikes</li>
+<li>Apply automatic throttling</li>
+</ul>
+
+<p>Example:</p>
+
+<p>If a network sends thousands of ATIs per second → automatically block it</p>
+
+<hr>
+
+<h2>9.11 Integration with monitoring</h2>
+
+<p>Defense architecture does not work without visibility.</p>
+
+<ul>
+<li>Centralized logs</li>
+<li>Event correlation</li>
+<li>Real-time alerts</li>
+</ul>
+
+<p>👉 A firewall without monitoring is blind defense.</p>
+
+<hr>
+
+<h2>9.12 Simple explanation</h2>
+
+<p>Imagine the network as an airport:</p>
+
+<ul>
+<li>SS7 Firewall → passport control</li>
+<li>Diameter Firewall → boarding control</li>
+<li>API Gateway → digital authentication</li>
+<li>Monitoring → cameras and security staff</li>
+</ul>
+
+<p>👉 Real security happens when everything works together.</p>
+
+<hr>
+
+<h2>9.13 Conclusion</h2>
+
+<p>A secure architecture does not rely on a single element, but on the combination of:</p>
+
+<ul>
+<li>Strict filtering</li>
+<li>Context validation</li>
+<li>Access control</li>
+<li>Continuous monitoring</li>
+</ul>
+
+<p><strong>The goal is not to stop all attacks — but to make exploitation difficult, expensive, and detectable.</strong></p>
+
+<footer>
+<p>End of Chapter 9 – Defense Architecture</p>
+</footer>
+
+</body>
+</html>

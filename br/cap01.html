@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 1 – Conceitos Básicos de Redes Móveis</title>
+
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+
+  h1, h2, h3 {
+    color: #60a5fa;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 20px 0;
+    background: #293845;
+  }
+
+  th, td {
+    border: 1px solid #3e4f65;
+    padding: 10px;
+  }
+
+  th {
+    background: #3b82f6;
+    color: white;
+  }
+
+  pre {
+    background: #2d3b4e;
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  ul, ol {
+    max-width: 900px;
+  }
+
+  p {
+    max-width: 900px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 1 – Conceitos Básicos de Redes Móveis</h1>
+
+<p>Este capítulo apresenta os fundamentos das redes móveis, explicando conceitos essenciais, a evolução das gerações, os principais equipamentos e como tudo funciona para que seu celular se conecte à internet e faça chamadas. Tudo de forma didática, para você que quer entender mesmo sem conhecimento técnico prévio.</p>
+
+<h2>1.1 O que são redes móveis?</h2>
+
+<p>Redes móveis são sistemas de comunicação que permitem a conexão de dispositivos sem fio, possibilitando que você se comunique e acesse a internet mesmo se estiver andando, dentro de casa, no carro ou em qualquer lugar. O principal diferencial é a <strong>mobilidade</strong> — seu dispositivo não precisa estar fixo a um cabo.</p>
+
+<p>As redes móveis utilizam ondas de rádio para transmitir informações entre seu dispositivo, conhecido como <em>User Equipment</em> (UE), e torres ou antenas espalhadas pelo território. Essas antenas são conectadas a uma rede principal chamada <em>core network</em>, que gerencia a comunicação, autenticação, e encaminha os dados para a internet ou outras redes.</p>
+
+<h3>Por que o celular não perde sinal quando você se move?</h3>
+
+<p>Quando você está em movimento, seu aparelho troca automaticamente a conexão de uma antena para outra — processo chamado <em>handover</em>. Isso acontece de forma transparente, para que suas chamadas, vídeos ou navegação continuem sem interrupções.</p>
+
+<h2>1.2 Evolução das gerações móveis: do 2G ao 5G</h2>
+
+<p>A tecnologia de redes móveis evoluiu muito desde o seu início, passando por diferentes gerações, que são comumente chamadas de <em>G</em> (de generation, em inglês). Cada geração trouxe melhorias significativas em velocidade, capacidade, funcionalidades e arquitetura.</p>
+
+<table>
+<thead>
+<tr><th>Geração</th><th>Características principais</th><th>Velocidade típica</th><th>Exemplos</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2G</strong></td>
+<td>Introdução da comunicação digital e mensagens SMS, foco em voz.</td>
+<td>Até 64 kbps</td>
+<td>GSM, CDMA</td>
+</tr>
+<tr>
+<td><strong>3G</strong></td>
+<td>Suporte para internet móvel e vídeo chamadas, velocidades maiores.</td>
+<td>Até alguns Mbps</td>
+<td>UMTS, HSPA</td>
+</tr>
+<tr>
+<td><strong>4G</strong></td>
+<td>Rede IP pura, alta velocidade e baixa latência.</td>
+<td>De dezenas a centenas Mbps</td>
+<td>LTE</td>
+</tr>
+<tr>
+<td><strong>5G</strong></td>
+<td>Velocidade ultrarrápida, latência quase zero, suporte massivo a IoT.</td>
+<td>Gigabits por segundo</td>
+<td>NR (New Radio)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Como essas gerações impactam o dia a dia?</h3>
+
+<ul>
+<li><strong>2G:</strong> Permitiram que você enviasse mensagens de texto e fizesse chamadas com qualidade digital.</li>
+<li><strong>3G:</strong> A internet no celular começou a ser rápida o suficiente para navegar e assistir vídeos em qualidade básica.</li>
+<li><strong>4G:</strong> Streaming em HD, jogos online e videochamadas fluídas se tornaram realidade.</li>
+<li><strong>5G:</strong> Promete transformar áreas como carros autônomos, cidades inteligentes, e conectar milhões de dispositivos IoT.</li>
+</ul>
+
+<h2>1.3 Componentes principais de uma rede móvel</h2>
+
+<p>Para entender como uma rede móvel funciona, vamos conhecer os equipamentos e entidades que fazem tudo acontecer.</p>
+
+<h3>1.3.1 UE (User Equipment)</h3>
+
+<p>É seu celular, tablet ou dispositivo conectado. Cada UE tem um <strong>SIM card</strong> que contém sua identificação na rede (o IMSI, que veremos adiante). O UE é o ponto inicial da comunicação.</p>
+
+<h3>1.3.2 Rede de Acesso Rádio (RAN)</h3>
+
+<p>A parte da rede responsável pela comunicação sem fio. Consiste em antenas e equipamentos de rádio que transmitem sinais para os dispositivos móveis.</p>
+
+<ul>
+<li>No <strong>4G</strong>, o equipamento principal é o <em>eNodeB</em> (Evolved Node B), a “torre” que conecta seu celular à rede.</li>
+<li>No <strong>5G</strong>, o equivalente é o <em>gNodeB</em>.</li>
+</ul>
+
+<h3>1.3.3 Core Network (Núcleo da Rede)</h3>
+
+<p>É o “cérebro” da rede, responsável por controlar a mobilidade, autenticação, roteamento e conexão com outras redes, como a internet.</p>
+
+<ul>
+<li><strong>MME (Mobility Management Entity):</strong> gerencia a mobilidade, sessões e autenticação do usuário.</li>
+<li><strong>HSS (Home Subscriber Server):</strong> banco de dados com informações do assinante, como perfil e permissões.</li>
+<li><strong>SGW (Serving Gateway):</strong> roteia os pacotes de dados entre o rádio e o core.</li>
+<li><strong>PGW (Packet Gateway):</strong> conecta a rede móvel à internet pública.</li>
+</ul>
+
+<h2>1.4 Bearers e Qualidade de Serviço (QoS)</h2>
+
+<p>Dentro da rede, os dados do usuário são transportados por canais lógicos chamados <strong>bearers</strong>. Cada bearer pode ter diferentes níveis de prioridade e qualidade.</p>
+
+<p>Por exemplo, uma chamada de voz precisa de baixa latência para não atrasar a conversa, enquanto o download de um arquivo pode tolerar mais demora.</p>
+
+<p><strong>QoS (Quality of Service)</strong> é o conjunto de técnicas que garantem que cada tipo de dado receba o tratamento adequado para funcionar bem.</p>
+
+<h3>Tipos de bearers</h3>
+
+<ul>
+<li><strong>Default bearer:</strong> criado automaticamente ao conectar, para dados gerais.</li>
+<li><strong>Dedicated bearer:</strong> criado para serviços específicos, como voz ou vídeo, com prioridade especial.</li>
+</ul>
+
+<h2>1.5 Termos importantes para o livro</h2>
+
+<table>
+<thead>
+<tr><th>Termo</th><th>Significado</th></tr>
+</thead>
+<tbody>
+<tr><td><code>IMSI</code></td><td>Identificador único do assinante dentro da rede móvel.</td></tr>
+<tr><td><code>MSISDN</code></td><td>O número de telefone do usuário.</td></tr>
+<tr><td><code>APN</code></td><td>Nome do ponto de acesso para conexão de dados.</td></tr>
+<tr><td><code>RRC</code></td><td>Protocolo de controle dos recursos rádio entre UE e eNodeB.</td></tr>
+<tr><td><code>NAS</code></td><td>Protocolo usado para controle entre UE e Core Network (ex: attach, autenticação).</td></tr>
+</tbody>
+</table>
+
+<h2>1.6 Visualização simples da rede 4G</h2>
+
+<p>[ UE (celular) ] &lt;--rádio--&gt; [ eNodeB (torre) ] &lt;--S1--&gt; [ Core Network (MME, SGW, PGW) ] &lt;--internet--&gt;</p>
+
+<h2>1.7 Como o aparelho se movimenta na rede: o handover</h2>
+
+<p>Imagine que você está numa ligação ou usando a internet no celular enquanto anda pela cidade. Para manter a conexão, seu aparelho precisa mudar de uma torre para outra sem interromper o serviço. Esse processo é o <strong>handover</strong>.</p>
+
+<p>Existem vários tipos de handover:</p>
+
+<ul>
+  <li><strong>Intra-eNodeB:</strong> troca de canal dentro da mesma antena.</li>
+  <li><strong>Inter-eNodeB:</strong> troca entre antenas diferentes da mesma rede.</li>
+  <li><strong>Inter-RAT:</strong> troca entre diferentes tecnologias, como 4G para 3G.</li>
+</ul>
+
+<p>O MME (entidade do core) coordena esses processos garantindo que seu aparelho e a rede estejam sincronizados para evitar quedas.</p>
+
+<h2>1.8 Segurança nas redes móveis</h2>
+
+<p>A segurança é fundamental para garantir que só usuários autorizados acessem a rede e para proteger suas informações. Alguns conceitos-chave:</p>
+
+<ul>
+  <li><strong>Autenticação:</strong> o processo onde a rede confirma que você é quem diz ser, usando dados do SIM card.</li>
+  <li><strong>Chaves de criptografia:</strong> usadas para codificar os dados e impedir interceptações.</li>
+  <li><strong>Integridade:</strong> garantia que os dados não foram alterados durante a transmissão.</li>
+</ul>
+
+<h2>1.9 Protocolos usados nas redes móveis</h2>
+
+<table>
+<thead>
+<tr><th>Protocolo</th><th>Função</th></tr>
+</thead>
+<tbody>
+<tr><td>RRC (Radio Resource Control)</td><td>Gerencia o controle do rádio, conexões, estado do UE</td></tr>
+<tr><td>NAS (Non-Access Stratum)</td><td>Controle de mobilidade, autenticação e segurança entre UE e Core</td></tr>
+<tr><td>S1AP</td><td>Protocolo entre eNodeB e MME para controle e sinalização</td></tr>
+<tr><td>GTP (GPRS Tunneling Protocol)</td><td>Transporte de dados entre SGW e PGW</td></tr>
+</tbody>
+</table>
+
+<h2>1.10 Resumo visual da arquitetura</h2>
+
+<table>
+<thead>
+<tr><th>Elemento</th><th>Função</th></tr>
+</thead>
+<tbody>
+<tr><td>UE</td><td>Dispositivo do usuário</td></tr>
+<tr><td>eNodeB</td><td>Antena e equipamento rádio</td></tr>
+<tr><td>MME</td><td>Gerência mobilidade e autenticação</td></tr>
+<tr><td>SGW</td><td>Roteia dados entre rádio e core</td></tr>
+<tr><td>PGW</td><td>Conexão com a internet</td></tr>
+<tr><td>HSS</td><td>Banco de dados do assinante</td></tr>
+</tbody>
+</table>
+
+<h2>1.11 Por que entender redes móveis?</h2>
+
+<p>Compreender o funcionamento das redes móveis ajuda você a:</p>
+
+<ul>
+  <li>Resolver problemas de conexão e voz.</li>
+  <li>Entender as limitações e possibilidades da tecnologia.</li>
+  <li>Preparar-se para o futuro com 5G e outras inovações.</li>
+  <li>Atuar profissionalmente com conhecimento técnico sólido.</li>
+</ul>
+
+<p>Até agora vimos como as redes móveis funcionam. Agora vamos entender algo essencial no mundo real: segurança.</p>
+
+<h2>1.12 Segurança nas redes móveis: o lado que ninguém vê</h2>
+
+<p>As redes móveis não foram originalmente criadas pensando em ataques modernos. Isso cria vulnerabilidades importantes que evoluíram junto com as gerações.</p>
+
+<h2>1.13 Evolução da segurança: do 2G ao 5G</h2>
+
+<table>
+<thead>
+<tr><th>Geração</th><th>Protocolo</th><th>Como funciona a segurança</th></tr>
+</thead>
+<tbody>
+<tr><td>2G/3G</td><td>SS7</td><td>Confiança total entre operadoras</td></tr>
+<tr><td>4G</td><td>Diameter</td><td>Mais controle, mas ainda baseado em confiança</td></tr>
+<tr><td>5G</td><td>APIs (HTTP/2)</td><td>Modelo moderno, mas exposto como serviços web</td></tr>
+</tbody>
+</table>
+
+<p>Resumo: a segurança melhorou, mas os riscos continuam — apenas mudaram de forma.</p>
+
+<h2>1.14 Tipos de ataques nas redes móveis</h2>
+
+<p>📍 1. Rastreamento (Tracking)</p>
+<p>Um atacante pode descobrir a localização de um usuário.</p>
+
+<p>📡 2. Interceptação</p>
+<p>Permite desviar chamadas e SMS.</p>
+
+<p>🔓 3. Vazamento de dados</p>
+<p>Exposição de dados do usuário.</p>
+
+<p>💸 4. Fraude</p>
+<p>Uso indevido da rede para gerar custos.</p>
+
+<p>⚙️ 5. Negação de serviço (DoS)</p>
+<p>Sobrecarregar a rede até parar.</p>
+
+<h2>1.15 Dashboard simplificado de risco</h2>
+
+<table>
+<thead>
+<tr><th>Categoria</th><th>Risco</th><th>Impacto</th></tr>
+</thead>
+<tbody>
+<tr><td>Tracking</td><td>🔴 Muito Alto</td><td>Localização do usuário</td></tr>
+<tr><td>Interceptação</td><td>🔴 Crítico</td><td>Chamadas e SMS</td></tr>
+<tr><td>Data Leak</td><td>🔴 Crítico</td><td>Dados sensíveis</td></tr>
+<tr><td>Fraude</td><td>🟠 Alto</td><td>Financeiro</td></tr>
+<tr><td>DoS</td><td>🟠 Alto</td><td>Queda de serviço</td></tr>
+</tbody>
+</table>
+
+<h2>1.16 Explicação simples (analogia)</h2>
+
+<p>Vamos simplificar:</p>
+
+<p>2G/3G (SS7): prédio sem porteiro → qualquer um entra</p>
+<p>4G: porteiro confia em conhecidos → risco ainda existe</p>
+<p>5G: sistema digital moderno → mas se hackear o sistema, abre tudo</p>
+
+<h2>1.17 Como as operadoras se protegem</h2>
+
+<ul>
+  <li>Firewalls de sinalização (SS7 e Diameter)</li>
+  <li>Controle de acesso entre redes</li>
+  <li>Validação de origem de mensagens</li>
+  <li>Proteção de APIs no 5G</li>
+  <li>Monitoramento em tempo real</li>
+</ul>
+
+<h2>1.18 Conclusão</h2>
+
+<p>A segurança nas redes móveis evoluiu, mas nunca deixou de ser um desafio.</p>
+
+<p><strong>Resumo final:</strong></p>
+
+<ul>
+<li>SS7 é vulnerável por design</li>
+<li>4G é vulnerável por confiança</li>
+<li>5G é vulnerável por exposição de APIs</li>
+</ul>
+
+<p>Entender isso é essencial para qualquer profissional de telecom — e também para entender como funciona o mundo conectado ao seu redor.</p>
+
+
+<p>Fim do Capítulo 1</p>
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 6 – SS7 in Depth</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 6 – SS7 in Depth</h1>
+
+<p>Now that you understand how attacks work, we will open the “black box” of SS7.</p>
+
+<p>This chapter shows how the protocol works internally, why it is vulnerable, and how real attacks happen at the signaling level.</p>
+
+<hr>
+
+<h2>6.1 What SS7 really is</h2>
+
+<p><strong>SS7 (Signaling System No. 7)</strong> is the system responsible for controlling the mobile network — it does not carry voice or data directly, but rather the commands that make everything work.</p>
+
+<p>Examples of what SS7 does:</p>
+
+<ul>
+<li>Locate users</li>
+<li>Route calls</li>
+<li>Deliver SMS</li>
+<li>Manage roaming</li>
+</ul>
+
+<p><strong>Analogy:</strong></p>
+
+<ul>
+<li>Data (voice/internet) = cars</li>
+<li>SS7 = traffic control system deciding where they go</li>
+</ul>
+
+<hr>
+
+<h2>6.2 SS7 architecture</h2>
+
+<table>
+<tr>
+<th>Element</th>
+<th>Function</th>
+</tr>
+<tr>
+<td>MSC</td>
+<td>Switching center (calls)</td>
+</tr>
+<tr>
+<td>HLR</td>
+<td>Subscriber database</td>
+</tr>
+<tr>
+<td>VLR</td>
+<td>Temporary subscriber registry</td>
+</tr>
+<tr>
+<td>STP</td>
+<td>Signaling router</td>
+</tr>
+<tr>
+<td>GMSC</td>
+<td>Gateway to other networks</td>
+</tr>
+</table>
+
+<p>👉 The STP is the “router” of SS7 — it decides where each message goes.</p>
+
+<hr>
+
+<h2>6.3 Protocol stack</h2>
+
+<table>
+<tr><th>Layer</th><th>Protocol</th><th>Function</th></tr>
+<tr><td>Application</td><td>MAP</td><td>Operations (location, SMS)</td></tr>
+<tr><td>Transaction</td><td>TCAP</td><td>Session control</td></tr>
+<tr><td>Network</td><td>SCCP</td><td>Addressing</td></tr>
+<tr><td>Transport</td><td>MTP</td><td>Reliable delivery</td></tr>
+</table>
+
+<p><strong>Simple summary:</strong></p>
+<ul>
+<li>MAP = what to do</li>
+<li>TCAP = how to talk</li>
+<li>SCCP = where to send</li>
+</ul>
+
+<hr>
+
+<h2>6.4 Real flow – SMS delivery</h2>
+
+<table>
+<tr><th>Step</th><th>Action</th></tr>
+<tr><td>1</td><td>SMS arrives at SMSC</td></tr>
+<tr><td>2</td><td>SMSC sends SendRoutingInfo</td></tr>
+<tr><td>3</td><td>HLR responds with user’s MSC</td></tr>
+<tr><td>4</td><td>SMS is delivered</td></tr>
+</table>
+
+<p>👉 This simple flow is exactly what attackers exploit.</p>
+
+<hr>
+
+<h2>6.5 The big problem: trust model</h2>
+
+<p>SS7 was designed with one assumption:</p>
+
+<p><strong>“If it is connected to the network, it is trusted.”</strong></p>
+
+<p>Today this is false.</p>
+
+<ul>
+<li>Third-party operators</li>
+<li>Global interconnections</li>
+<li>Unauthorized access</li>
+</ul>
+
+<p>👉 Result: any connected network can send dangerous commands.</p>
+
+<hr>
+
+<h2>6.6 Example technical message (simplified)</h2>
+
+<pre>
+MAP: SendRoutingInfo
+IMSI: 724XXXXXXXXXXXX
+MSISDN: +5511999999999
+</pre>
+
+<p>👉 This type of message can reveal location or call routing paths.</p>
+
+<hr>
+
+<h2>6.7 Detailed attack – SMS interception</h2>
+
+<h3>🎯 Objective</h3>
+<p>Steal SMS (e.g., banking code)</p>
+
+<h3>🔗 Technical flow</h3>
+
+<table>
+<tr><th>Step</th><th>Message</th><th>Description</th></tr>
+<tr><td>1</td><td>UpdateLocation</td><td>Attacker registers fake location</td></tr>
+<tr><td>2</td><td>CancelLocation</td><td>Removes original registration</td></tr>
+<tr><td>3</td><td>InsertSubscriberData</td><td>Updates data in fake VLR</td></tr>
+<tr><td>4</td><td>ForwardSM</td><td>SMS is redirected to attacker</td></tr>
+</table>
+
+<p><strong>Result:</strong> victim continues using the phone normally, but SMS is diverted.</p>
+
+<hr>
+
+<h2>6.8 Detailed attack – tracking</h2>
+
+<h3>🎯 Objective</h3>
+<p>Discover user location</p>
+
+<h3>🔗 Flow</h3>
+
+<table>
+<tr><th>Step</th><th>Message</th><th>Description</th></tr>
+<tr><td>1</td><td>AnyTimeInterrogation</td><td>Requests location</td></tr>
+<tr><td>2</td><td>ProvideSubscriberInfo</td><td>HLR returns data</td></tr>
+</table>
+
+<p><strong>Result:</strong> precise location (sometimes cell-level accuracy).</p>
+
+<hr>
+
+<h2>6.9 Detailed attack – IMSI discovery</h2>
+
+<h3>🎯 Objective</h3>
+<p>Discover SIM internal identity</p>
+
+<h3>🔗 Flow</h3>
+
+<table>
+<tr><th>Step</th><th>Message</th><th>Description</th></tr>
+<tr><td>1</td><td>SendIMSI</td><td>Requests IMSI</td></tr>
+<tr><td>2</td><td>Response</td><td>HLR returns IMSI</td></tr>
+</table>
+
+<p><strong>Result:</strong> foundation for further attacks.</p>
+
+<hr>
+
+<h2>6.10 How operators defend themselves</h2>
+
+<table>
+<tr><th>Control</th><th>Description</th></tr>
+<tr><td>SS7 Firewall</td><td>Filters suspicious messages</td></tr>
+<tr><td>Whitelist</td><td>Allows only trusted networks</td></tr>
+<tr><td>Origin validation</td><td>Checks if source is legitimate</td></tr>
+<tr><td>MAP blocking</td><td>Blocks dangerous commands</td></tr>
+</table>
+
+<p><strong>Main rule:</strong></p>
+<p>❌ Do not trust external networks<br>
+✅ Allow only what is necessary</p>
+
+<hr>
+
+<h2>6.11 Business impact</h2>
+
+<ul>
+<li>Financial fraud</li>
+<li>Bank account theft</li>
+<li>Privacy violations</li>
+<li>Reputation damage</li>
+</ul>
+
+<p>👉 A single attack can affect thousands of users.</p>
+
+<hr>
+
+<h2>6.12 Conclusion</h2>
+
+<p>SS7 remains one of the largest attack surfaces in mobile networks.</p>
+
+<ul>
+<li>Powerful architecture</li>
+<li>Outdated trust model</li>
+<li>High global exposure</li>
+</ul>
+
+<p><strong>Understanding SS7 means understanding the foundation of modern telecom attacks.</strong></p>
+
+<footer>
+<p>End of Chapter 6 – SS7 in Depth</p>
+</footer>
+
+</body>
+</html>

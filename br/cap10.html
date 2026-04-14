@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 10 – Detecção e Monitoramento em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 10 – Detecção e Monitoramento em Redes Móveis</h1>
+
+<p>Se o Capítulo 9 mostrou <strong>como proteger</strong>, este capítulo mostra algo ainda mais crítico na prática:</p>
+
+<p><strong>👉 como identificar ataques acontecendo em tempo real.</strong></p>
+
+<p>Em redes móveis modernas, segurança não é apenas bloqueio — é <strong>visibilidade contínua</strong>.</p>
+
+<p>Esse é o papel de ambientes como SOC (Security Operations Center) e NOC (Network Operations Center).</p>
+
+<hr>
+
+<h2>10.1 O desafio da detecção em telecom</h2>
+
+<p>Diferente do mundo tradicional de TI, redes móveis possuem características únicas:</p>
+
+<ul>
+<li>Alto volume de signaling (milhões de mensagens por segundo)</li>
+<li>Protocolos especializados (SS7, Diameter, HTTP/2)</li>
+<li>Tráfego legítimo pode parecer malicioso</li>
+<li>Ataques muitas vezes são silenciosos (low & slow)</li>
+</ul>
+
+<p>👉 Resultado:</p>
+
+<p><strong>Detectar ataque em telecom é encontrar uma agulha em um palheiro em tempo real.</strong></p>
+
+<hr>
+
+<h2>10.2 Tipos de detecção</h2>
+
+<table>
+<tr>
+<th>Tipo</th>
+<th>Descrição</th>
+<th>Exemplo</th>
+</tr>
+
+<tr>
+<td>Baseada em regra</td>
+<td>Assinaturas conhecidas</td>
+<td>Bloquear ATI externo</td>
+</tr>
+
+<tr>
+<td>Baseada em comportamento</td>
+<td>Desvio do padrão normal</td>
+<td>Volume anormal de ULR</td>
+</tr>
+
+<tr>
+<td>Baseada em contexto</td>
+<td>Combinação de eventos</td>
+<td>Tracking + interceptação</td>
+</tr>
+
+<tr>
+<td>Baseada em risco</td>
+<td>Score dinâmico</td>
+<td>Origem + frequência + impacto</td>
+</tr>
+</table>
+
+<p>👉 Sistemas modernos usam uma combinação dessas abordagens.</p>
+
+<hr>
+
+<h2>10.3 Principais indicadores de ataque (KPIs de segurança)</h2>
+
+<h3>📍 Indicadores de Tracking</h3>
+
+<table>
+<tr><th>Indicador</th><th>Descrição</th></tr>
+<tr><td>ATI externo</td><td>Consulta de localização fora do roaming</td></tr>
+<tr><td>Frequência por MSISDN</td><td>Múltiplas consultas em curto tempo</td></tr>
+<tr><td>Origem suspeita</td><td>Operadora desconhecida</td></tr>
+</table>
+
+<h3>📡 Indicadores de Interceptação</h3>
+
+<table>
+<tr><th>Indicador</th><th>Descrição</th></tr>
+<tr><td>SRI anômalo</td><td>Consulta de roteamento inesperada</td></tr>
+<tr><td>Alteração de VLR</td><td>Mudança não usual de localização</td></tr>
+<tr><td>RegisterSS suspeito</td><td>Ativação de redirecionamento</td></tr>
+</table>
+
+<h3>🔓 Indicadores de Data Disclosure</h3>
+
+<table>
+<tr><th>Indicador</th><th>Descrição</th></tr>
+<tr><td>SendIMSI externo</td><td>Solicitação de identidade do assinante</td></tr>
+<tr><td>ATI + SRI combinados</td><td>Coleta completa de dados</td></tr>
+</table>
+
+<h3>⚙️ Indicadores de DoS</h3>
+
+<table>
+<tr><th>Indicador</th><th>Descrição</th></tr>
+<tr><td>Volume de signaling</td><td>Aumento abrupto</td></tr>
+<tr><td>Falhas em cascata</td><td>Timeouts em múltiplos nós</td></tr>
+<tr><td>Retry storms</td><td>Repetição massiva de requests</td></tr>
+</table>
+
+<hr>
+
+<h2>10.4 Exemplo real de detecção (caso prático)</h2>
+
+<h3>Cenário: ataque de tracking</h3>
+
+<pre>
+1. Origem externa envia ATI
+2. Consulta repetida para mesmo MSISDN
+3. Intervalo curto entre mensagens
+</pre>
+
+<p><strong>Correlação:</strong></p>
+
+<ul>
+<li>Origem não confiável</li>
+<li>Alta frequência</li>
+<li>Alvo específico</li>
+</ul>
+
+<p><strong>Conclusão:</strong></p>
+
+<p>👉 Tentativa de rastreamento ativo</p>
+
+<hr>
+
+<h2>10.5 Detecção em 4G (Diameter)</h2>
+
+<p>No 4G, ataques são mais sutis e muitas vezes parecem tráfego legítimo.</p>
+
+<h3>Exemplo: início de Diameter Storm</h3>
+
+<table>
+<tr><th>Sinal</th><th>Interpretação</th></tr>
+<tr><td>Aumento de ULR</td><td>Possível falha ou ataque</td></tr>
+<tr><td>Retransmissões</td><td>Timeouts na rede</td></tr>
+<tr><td>CPU alta no HSS</td><td>Saturação</td></tr>
+</table>
+
+<p>👉 Se não tratado rapidamente, evolui para colapso da rede.</p>
+
+<hr>
+
+<h2>10.6 Detecção em 5G (SBA)</h2>
+
+<p>No 5G, o foco muda para APIs.</p>
+
+<h3>Indicadores comuns</h3>
+
+<table>
+<tr><th>Indicador</th><th>Descrição</th></tr>
+<tr><td>API flood</td><td>Volume alto de requisições</td></tr>
+<tr><td>Token inválido</td><td>Tentativa de acesso não autorizado</td></tr>
+<tr><td>Access pattern anômalo</td><td>Uso fora do padrão esperado</td></tr>
+</table>
+
+<p>👉 Aqui, ferramentas de observabilidade são essenciais.</p>
+
+<hr>
+
+<h2>10.7 Playbooks de resposta</h2>
+
+<p>Detectar é só metade do trabalho. A outra metade é <strong>responder rápido</strong>.</p>
+
+<h3>Exemplo: Playbook – Tracking</h3>
+
+<pre>
+1. Detectar ATI suspeito
+2. Validar origem
+3. Bloquear no firewall
+4. Adicionar à blacklist
+5. Monitorar recorrência
+</pre>
+
+<h3>Exemplo: Playbook – Interceptação</h3>
+
+<pre>
+1. Detectar SRI anômalo
+2. Verificar mudanças de roteamento
+3. Bloquear origem
+4. Restaurar configuração original
+5. Auditar impacto
+</pre>
+
+<h3>Exemplo: Playbook – DoS</h3>
+
+<pre>
+1. Detectar aumento de signaling
+2. Identificar origem
+3. Rate-limit
+4. Redirecionar tráfego
+5. Escalar incidente
+</pre>
+
+<hr>
+
+<h2>10.8 Monitoramento contínuo</h2>
+
+<p>Uma operadora madura monitora:</p>
+
+<ul>
+<li>Tráfego SS7 / Diameter / 5G APIs</li>
+<li>Comportamento por assinante</li>
+<li>Eventos por parceiro de roaming</li>
+<li>Saúde da rede (CPU, latência, erros)</li>
+</ul>
+
+<p><strong>👉 Segurança vira operação contínua, não evento pontual.</strong></p>
+
+<hr>
+
+<h2>10.9 Desafios reais</h2>
+
+<ul>
+<li>Falso positivo alto</li>
+<li>Falta de contexto entre redes</li>
+<li>Ataques distribuídos</li>
+<li>Volume massivo de dados</li>
+</ul>
+
+<p>👉 Por isso, automação e correlação são essenciais.</p>
+
+<hr>
+
+<h2>10.10 Conclusão</h2>
+
+<p>Se proteger é importante — mas <strong>enxergar o ataque acontecendo é o que realmente salva a operação</strong>.</p>
+
+<ul>
+<li>Sem visibilidade → ataque invisível</li>
+<li>Sem correlação → alerta inútil</li>
+<li>Sem resposta → prejuízo inevitável</li>
+</ul>
+
+<p><strong>👉 Em telecom, quem detecta primeiro, ganha.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 10 – Detecção e Monitoramento</p>
+</footer>
+
+</body>
+</html>

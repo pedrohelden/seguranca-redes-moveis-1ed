@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 10 – Detection and Monitoring in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 10 – Detection and Monitoring in Mobile Networks</h1>
+
+<p>If Chapter 9 showed <strong>how to protect</strong>, this chapter shows something even more critical in practice:</p>
+
+<p><strong>👉 how to identify attacks happening in real time.</strong></p>
+
+<p>In modern mobile networks, security is not only about blocking — it is about <strong>continuous visibility</strong>.</p>
+
+<p>This is the role of environments such as SOC (Security Operations Center) and NOC (Network Operations Center).</p>
+
+<hr>
+
+<h2>10.1 The challenge of detection in telecom</h2>
+
+<p>Unlike traditional IT systems, mobile networks have unique characteristics:</p>
+
+<ul>
+<li>Massive signaling volume (millions of messages per second)</li>
+<li>Specialized protocols (SS7, Diameter, HTTP/2)</li>
+<li>Legitimate traffic can look malicious</li>
+<li>Attacks are often silent (low & slow)</li>
+</ul>
+
+<p>👉 Result:</p>
+
+<p><strong>Detecting an attack in telecom is like finding a needle in a haystack in real time.</strong></p>
+
+<hr>
+
+<h2>10.2 Types of detection</h2>
+
+<table>
+<tr>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+
+<tr>
+<td>Rule-based</td>
+<td>Known signatures</td>
+<td>Block external ATI</td>
+</tr>
+
+<tr>
+<td>Behavior-based</td>
+<td>Deviation from normal patterns</td>
+<td>Abnormal ULR volume</td>
+</tr>
+
+<tr>
+<td>Context-based</td>
+<td>Combination of events</td>
+<td>Tracking + interception</td>
+</tr>
+
+<tr>
+<td>Risk-based</td>
+<td>Dynamic scoring</td>
+<td>Origin + frequency + impact</td>
+</tr>
+</table>
+
+<p>👉 Modern systems use a combination of these approaches.</p>
+
+<hr>
+
+<h2>10.3 Key attack indicators (security KPIs)</h2>
+
+<h3>📍 Tracking indicators</h3>
+
+<table>
+<tr><th>Indicator</th><th>Description</th></tr>
+<tr><td>External ATI</td><td>Location request outside roaming context</td></tr>
+<tr><td>MSISDN frequency</td><td>Multiple queries in short time</td></tr>
+<tr><td>Suspicious origin</td><td>Unknown operator</td></tr>
+</table>
+
+<h3>📡 Interception indicators</h3>
+
+<table>
+<tr><th>Indicator</th><th>Description</th></tr>
+<tr><td>Anomalous SRI</td><td>Unexpected routing request</td></tr>
+<tr><td>VLR changes</td><td>Unusual location update</td></tr>
+<tr><td>Suspicious RegisterSS</td><td>Forwarding activation</td></tr>
+</table>
+
+<h3>🔓 Data disclosure indicators</h3>
+
+<table>
+<tr><th>Indicator</th><th>Description</th></tr>
+<tr><td>External SendIMSI</td><td>Subscriber identity request</td></tr>
+<tr><td>ATI + SRI combined</td><td>Full data collection pattern</td></tr>
+</table>
+
+<h3>⚙️ DoS indicators</h3>
+
+<table>
+<tr><th>Indicator</th><th>Description</th></tr>
+<tr><td>Signaling volume spike</td><td>Sudden increase</td></tr>
+<tr><td>Cascading failures</td><td>Timeouts across multiple nodes</td></tr>
+<tr><td>Retry storms</td><td>Massive request repetition</td></tr>
+</table>
+
+<hr>
+
+<h2>10.4 Real detection example (practical case)</h2>
+
+<h3>Scenario: tracking attack</h3>
+
+<pre>
+1. External origin sends ATI
+2. Repeated queries for same MSISDN
+3. Short time interval between messages
+</pre>
+
+<p><strong>Correlation:</strong></p>
+
+<ul>
+<li>Untrusted origin</li>
+<li>High frequency</li>
+<li>Targeted subscriber</li>
+</ul>
+
+<p><strong>Conclusion:</strong></p>
+
+<p>👉 Active tracking attempt</p>
+
+<hr>
+
+<h2>10.5 Detection in 4G (Diameter)</h2>
+
+<p>In 4G, attacks are more subtle and often look like legitimate traffic.</p>
+
+<h3>Example: early Diameter Storm signs</h3>
+
+<table>
+<tr><th>Signal</th><th>Interpretation</th></tr>
+<tr><td>Increase in ULR</td><td>Possible failure or attack</td></tr>
+<tr><td>Retransmissions</td><td>Network timeouts</td></tr>
+<tr><td>High HSS CPU</td><td>Saturation</td></tr>
+</table>
+
+<p>👉 If not handled quickly, it can escalate into a full network collapse.</p>
+
+<hr>
+
+<h2>10.6 Detection in 5G (SBA)</h2>
+
+<p>In 5G, the focus shifts to APIs.</p>
+
+<h3>Common indicators</h3>
+
+<table>
+<tr><th>Indicator</th><th>Description</th></tr>
+<tr><td>API flood</td><td>High request volume</td></tr>
+<tr><td>Invalid token</td><td>Unauthorized access attempt</td></tr>
+<tr><td>Anomalous access pattern</td><td>Behavior outside expected usage</td></tr>
+</table>
+
+<p>👉 Observability tools are essential here.</p>
+
+<hr>
+
+<h2>10.7 Response playbooks</h2>
+
+<p>Detection is only half the job. The other half is <strong>fast response</strong>.</p>
+
+<h3>Example: Tracking playbook</h3>
+
+<pre>
+1. Detect suspicious ATI
+2. Validate origin
+3. Block in firewall
+4. Add to blacklist
+5. Monitor recurrence
+</pre>
+
+<h3>Example: Interception playbook</h3>
+
+<pre>
+1. Detect anomalous SRI
+2. Check routing changes
+3. Block origin
+4. Restore configuration
+5. Audit impact
+</pre>
+
+<h3>Example: DoS playbook</h3>
+
+<pre>
+1. Detect signaling spike
+2. Identify source
+3. Apply rate limiting
+4. Redirect traffic
+5. Escalate incident
+</pre>
+
+<hr>
+
+<h2>10.8 Continuous monitoring</h2>
+
+<p>A mature operator monitors:</p>
+
+<ul>
+<li>SS7 / Diameter / 5G API traffic</li>
+<li>Subscriber behavior</li>
+<li>Roaming partner events</li>
+<li>Network health (CPU, latency, errors)</li>
+</ul>
+
+<p><strong>👉 Security becomes continuous operation, not a one-time event.</strong></p>
+
+<hr>
+
+<h2>10.9 Real-world challenges</h2>
+
+<ul>
+<li>High false positive rates</li>
+<li>Lack of cross-network context</li>
+<li>Distributed attacks</li>
+<li>Massive data volume</li>
+</ul>
+
+<p>👉 That’s why automation and correlation are essential.</p>
+
+<hr>
+
+<h2>10.10 Conclusion</h2>
+
+<p>Protection is important — but <strong>seeing the attack happening is what truly saves the operation</strong>.</p>
+
+<ul>
+<li>No visibility → invisible attack</li>
+<li>No correlation → useless alert</li>
+<li>No response → inevitable damage</li>
+</ul>
+
+<p><strong>👉 In telecom, whoever detects first wins.</strong></p>
+
+<footer>
+<p>End of Chapter 10 – Detection and Monitoring</p>
+</footer>
+
+</body>
+</html>

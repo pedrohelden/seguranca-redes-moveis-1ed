@@ -1,42 +1,29 @@
-const CACHE_NAME = "ebook-cache-v2"; // 👈 MUDE ISSO A CADA UPDATE
+const CACHE_NAME = "ebook-cache-v4";
 
-const urlsToCache = [
+// versao com suporte multi-language
+// arquivos essenciais (shell do app)
+const CORE_FILES = [
   "./",
-  "index.html",
-  "style.css",
-
-  "cap01.html",
-  "cap02.html",
-  "cap03.html",
-  "cap04.html",
-  "cap05.html",
-  "cap06.html",
-  "cap07.html",
-  "cap08.html",
-  "cap09.html",
-  "cap10.html",
-  "cap11.html",
-  "cap12.html",
-  "cap13.html",
-  "cap14.html",
-
-  "capa.jpg",
-  "manifest.json",
-  "icon.png"
+  "/br/",
+  "/en/",
+  "/style.css",
+  "/capa.jpg",
+  "/icon.png",
+  "/manifest.json"
 ];
 
-// 🔥 INSTALA E FORÇA NOVA VERSÃO
+// INSTALL
 self.addEventListener("install", (event) => {
-  self.skipWaiting(); // ativa nova versão imediatamente
+  self.skipWaiting();
 
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
+      return cache.addAll(CORE_FILES);
     })
   );
 });
 
-// 🔥 LIMPA CACHE ANTIGO AUTOMATICAMENTE
+// ACTIVATE (remove cache antigo automaticamente)
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     Promise.all([
@@ -49,30 +36,30 @@ self.addEventListener("activate", (event) => {
           })
         )
       ),
-      self.clients.claim() // assume controle imediato
+      self.clients.claim()
     ])
   );
 });
 
-// 🔥 ESTRATÉGIA INTELIGENTE DE CACHE
+// FETCH (network-first + fallback offline)
 self.addEventListener("fetch", (event) => {
   const req = event.request;
+  const url = new URL(req.url);
+
+  // ignora requests externos
+  if (url.origin !== self.location.origin) return;
 
   event.respondWith(
     fetch(req)
       .then((res) => {
-        // atualiza cache em background
-        const resClone = res.clone();
+        const clone = res.clone();
 
         caches.open(CACHE_NAME).then((cache) => {
-          cache.put(req, resClone);
+          cache.put(req, clone);
         });
 
         return res;
       })
-      .catch(() => {
-        // fallback offline
-        return caches.match(req);
-      })
+      .catch(() => caches.match(req))
   );
 });

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Index – Mobile Network Security</title>
+
+<link rel="stylesheet" href="/style.css">
+<link rel="manifest" href="/manifest.json">
+
+<meta name="theme-color" content="#000000">
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-inner">
+
+    <h1>📡 Mobile Network Security: Attacks, Defense and the Future of 5G</h1>
+    <h1>📘 Index</h1>
+
+    <div class="bloco">🔵 Fundamentals (Ch.1–2)</div>
+    <a href="#" data-page="cap01.html">Chapter 1: Basics of Mobile Networks</a>
+    <a href="#" data-page="cap02.html">Chapter 2: Mobile Network Security: Fundamentals and Trust Model</a>
+
+    <div class="bloco">🔴 Attacks (Ch.3–5)</div>
+    <a href="#" data-page="cap03.html">Chapter 3: Anatomy of Mobile Network Attacks (Kill Chain)</a>
+    <a href="#" data-page="cap04.html">Chapter 4: Mobile Network Attack Surface</a>
+    <a href="#" data-page="cap05.html">Chapter 5: Real Cases and Operator Incidents</a>
+
+    <div class="bloco">🟠 Protocols (Ch.6–8)</div>
+    <a href="#" data-page="cap06.html">Chapter 6: SS7: Architecture and Vulnerabilities</a>
+    <a href="#" data-page="cap07.html">Chapter 7: Diameter in 4G (LTE) Networks in Practice</a>
+    <a href="#" data-page="cap08.html">Chapter 8: 5G Security: Service-Based Architecture (SBA)</a>
+
+    <div class="bloco">🛡️ Defense (Ch.9–10)</div>
+    <a href="#" data-page="cap09.html">Chapter 9: Mobile Network Defense Architecture</a>
+    <a href="#" data-page="cap10.html">Chapter 10: Monitoring, Detection and Threat Response</a>
+
+    <div class="bloco">⚔️ Advanced Attacks (Ch.11–12)</div>
+    <a href="#" data-page="cap11.html">Chapter 11: Evasion Techniques in Mobile Networks</a>
+    <a href="#" data-page="cap12.html">Chapter 12: Telecom Attack Tooling and Engineering</a>
+
+    <div class="bloco">💼 Business (Ch.13)</div>
+    <a href="#" data-page="cap13.html">Chapter 13: Security Impact on Business and Regulation</a>
+
+    <div class="bloco">🔮 Future (Ch.14)</div>
+    <a href="#" data-page="cap14.html">Chapter 14: Future of Mobile Network Security (5G Advanced and beyond)</a>
+
+    <footer style="margin-top:30px; opacity:0.85;">
+      <p>📘 End of book.</p>
+    </footer>
+
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content" id="content">
+  <h2>📘 Welcome!</h2>
+  <p>Select a chapter from the index to read it here.</p>
+</div>
+
+<!-- COVER -->
+<div class="cover">
+
+  <div style="text-align:center;">
+    <img src="/en/cover.jpg" alt="International Cover">
+
+    <footer style="margin-top:30px; opacity:0.85;">
+      <p>📘 Pedro Helden, 2026</p>
+    </footer>
+
+    <p>
+      🔗 
+      <a href="https://www.linkedin.com/in/pedrohelden"
+         target="_blank"
+         style="color:#60a5fa; text-decoration:none;">
+        linkedin.com/in/pedrohelden
+      </a>
+    </p>
+
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.querySelector(".sidebar").addEventListener("click", (e) => {
+    const link = e.target.closest("a[data-page]");
+    if (!link) return;
+
+    e.preventDefault();
+
+    const page = link.getAttribute("data-page");
+    loadChapter(page);
+  });
+
+});
+
+// 🚀 loader simples (SEM LANG, igual BR)
+async function loadChapter(page) {
+  try {
+    const path = page;
+
+    const res = await fetch(path);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const html = await res.text();
+
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    const body = temp.querySelector("body");
+    const content = body ? body.innerHTML : temp.innerHTML;
+
+    document.getElementById("content").innerHTML = content;
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("content").innerHTML =
+      "<h2>Error loading chapter</h2><p>" + page + "</p>";
+  }
+}
+</script>
+
+</body>
+</html>

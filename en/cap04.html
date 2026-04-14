@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 4 – Defense Architecture in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 4 – Defense Architecture in Mobile Networks</h1>
+
+<p>After understanding how attacks work (Chapter 3), we now answer the most important question:</p>
+
+<p><strong>How does a mobile operator actually defend itself?</strong></p>
+
+<p>This chapter presents the complete defense architecture — from the perimeter to the core — based on real industry practices.</p>
+
+---
+
+<h2>4.1 The problem with traditional defense</h2>
+
+<p>Many networks still follow an old model:</p>
+
+<ul>
+<li>They trust partner networks</li>
+<li>They block only known attacks</li>
+<li>They do not analyze behavior</li>
+</ul>
+
+<p>👉 This fails because modern attacks are:</p>
+
+<ul>
+<li>Sequential (kill chain based)</li>
+<li>Disguised as legitimate traffic</li>
+<li>Distributed across multiple networks</li>
+</ul>
+
+---
+
+<h2>4.2 Modern principle: Zero Trust Telecom</h2>
+
+<p>The current security model is based on:</p>
+
+<p><strong>“Never trust, always verify.”</strong></p>
+
+<table>
+<tr><th>Old model</th><th>Modern model</th></tr>
+<tr><td>Implicit trust</td><td>Continuous validation</td></tr>
+<tr><td>Simple blocking</td><td>Context-aware analysis</td></tr>
+<tr><td>Perimeter focus</td><td>Layered defense</td></tr>
+</table>
+
+---
+
+<h2>4.3 Layered defense architecture</h2>
+
+<p>Effective protection happens across multiple layers:</p>
+
+<p>
+[ External Network ] → [ Firewall ] → [ Core Network ] → [ Monitoring ]
+</p>
+
+<p>Each layer has a specific role.</p>
+
+---
+
+<h2>4.4 Layer 1 – Perimeter protection</h2>
+
+<h3>Objective:</h3>
+<p>Block malicious messages before they enter the network.</p>
+
+<h3>Controls:</h3>
+
+<ul>
+<li>SS7 Firewall</li>
+<li>Diameter Firewall</li>
+<li>API Gateway (5G)</li>
+</ul>
+
+<h3>What is filtered:</h3>
+
+<ul>
+<li>Messages from unknown networks</li>
+<li>Dangerous commands (e.g., SendRoutingInfo)</li>
+<li>Out-of-pattern traffic</li>
+</ul>
+
+<p><strong>👉 First line of defense.</strong></p>
+
+---
+
+<h2>4.5 Layer 2 – Protocol validation</h2>
+
+<h3>Objective:</h3>
+<p>Verify whether the message is technically valid.</p>
+
+<h3>Examples:</h3>
+
+<ul>
+<li>Does the IMSI belong to the source network?</li>
+<li>Is the sender allowed to send this message type?</li>
+<li>Does the flow follow the correct sequence?</li>
+</ul>
+
+<table>
+<tr><th>Validation</th><th>Example</th></tr>
+<tr><td>Origin</td><td>Valid GT/Realm</td></tr>
+<tr><td>Consistency</td><td>IMSI vs MSISDN</td></tr>
+<tr><td>Sequence</td><td>Correct message order</td></tr>
+</table>
+
+<p><strong>👉 Blocks spoofing and logical manipulation.</strong></p>
+
+---
+
+<h2>4.6 Layer 3 – Attack-specific protection</h2>
+
+<p>Here we apply rules for known attacks:</p>
+
+<table>
+<tr><th>Attack</th><th>Mitigation</th></tr>
+<tr><td>AnyTimeInterrogation</td><td>Block external origin</td></tr>
+<tr><td>SendRoutingInfo</td><td>Allow only trusted partners</td></tr>
+<tr><td>SendIMSI</td><td>Full external blocking</td></tr>
+<tr><td>ProvideRoamingNumber</td><td>Validate IMSI vs origin</td></tr>
+</table>
+
+<p><strong>👉 Signature-based defense.</strong></p>
+
+---
+
+<h2>4.7 Layer 4 – Monitoring and detection</h2>
+
+<h3>Objective:</h3>
+<p>Detect attacks that bypass previous layers.</p>
+
+<h3>What to monitor:</h3>
+
+<ul>
+<li>Traffic patterns</li>
+<li>Suspicious sequences (kill chain behavior)</li>
+<li>Unusual message volume</li>
+</ul>
+
+<h3>Example:</h3>
+
+<p>
+SendIMSI → AnyTimeInterrogation → SendRoutingInfo
+</p>
+
+<p>👉 This indicates an ongoing attack.</p>
+
+---
+
+<h2>4.8 Layer 5 – Response and containment</h2>
+
+<p>When an attack is detected:</p>
+
+<ul>
+<li>Immediately block the source</li>
+<li>Isolate network elements</li>
+<li>Apply dynamic rules</li>
+</ul>
+
+<p><strong>👉 Response time is critical.</strong></p>
+
+---
+
+<h2>4.9 Defense in 4G (Diameter)</h2>
+
+<p>Main protection points:</p>
+
+<ul>
+<li>Realm validation</li>
+<li>AIR/ULA message control</li>
+<li>Diameter storm protection</li>
+</ul>
+
+<table>
+<tr><th>Attack</th><th>Mitigation</th></tr>
+<tr><td>Fake Update Location</td><td>Source validation</td></tr>
+<tr><td>CCR manipulation</td><td>Charging control</td></tr>
+<tr><td>Flood</td><td>Rate limiting</td></tr>
+</table>
+
+---
+
+<h2>4.10 Defense in 5G (SBA)</h2>
+
+<p>In 5G, security is API-based:</p>
+
+<ul>
+<li>Authentication (OAuth2)</li>
+<li>Encryption (TLS)</li>
+<li>Access control (API Gateway)</li>
+</ul>
+
+<table>
+<tr><th>Risk</th><th>Protection</th></tr>
+<tr><td>Unauthorized access</td><td>Strong authentication</td></tr>
+<tr><td>Data exposure</td><td>Authorization control</td></tr>
+<tr><td>API flood</td><td>Rate limiting</td></tr>
+</table>
+
+---
+
+<h2>4.11 Mapping to the Kill Chain</h2>
+
+<p>An effective defense blocks each stage of the attack:</p>
+
+<table>
+<tr><th>Stage</th><th>Defense</th></tr>
+<tr><td>Identity</td><td>SendIMSI blocking</td></tr>
+<tr><td>Location</td><td>ATI filtering</td></tr>
+<tr><td>Control</td><td>Routing validation</td></tr>
+<tr><td>Exploitation</td><td>Monitoring and response</td></tr>
+</table>
+
+<p><strong>👉 The goal is to break the chain.</strong></p>
+
+---
+
+<h2>4.12 Simple analogy</h2>
+
+<p>Think of the network as a modern building:</p>
+
+<ul>
+<li><strong>Reception:</strong> firewall</li>
+<li><strong>ID badge:</strong> authentication</li>
+<li><strong>Cameras:</strong> monitoring</li>
+<li><strong>Internal security:</strong> logical validation</li>
+</ul>
+
+<p>If any layer fails, the attacker gets in.</p>
+
+---
+
+<h2>4.13 Common operator mistakes</h2>
+
+<ul>
+<li>Trusting international partners</li>
+<li>Focusing only on firewalls</li>
+<li>Not monitoring behavior</li>
+<li>Overly permissive rules</li>
+</ul>
+
+---
+
+<h2>4.14 Conclusion</h2>
+
+<p>Mobile network security requires:</p>
+
+<ul>
+<li>Layered defense</li>
+<li>Continuous validation</li>
+<li>Active monitoring</li>
+</ul>
+
+<p><strong>👉 It is not enough to block attacks — the kill chain must be broken.</strong></p>
+
+<footer>
+<p>End of Chapter 4 – Defense Architecture</p>
+</footer>
+
+</body>
+</html>

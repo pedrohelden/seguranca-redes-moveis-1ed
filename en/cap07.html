@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 7 – Diameter (4G) in Depth</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 7 – Diameter (4G) in Depth</h1>
+
+<p>If SS7 is the “nervous system” of legacy networks, then <strong>Diameter</strong> is the signaling brain of 4G.</p>
+
+<p>In this chapter, you will understand how 4G works internally, why it is more advanced than SS7 — and why it can still fail in critical ways.</p>
+
+<hr>
+
+<h2>7.1 What is Diameter?</h2>
+
+<p><strong>Diameter</strong> is the signaling protocol used in the 4G (LTE) core network. It controls:</p>
+
+<ul>
+<li>User authentication</li>
+<li>Mobility (network registration)</li>
+<li>Usage policies (internet, QoS)</li>
+<li>Billing (charging)</li>
+</ul>
+
+<p><strong>Difference from SS7:</strong></p>
+
+<ul>
+<li>SS7 → based on implicit trust</li>
+<li>Diameter → based on sessions and authentication</li>
+</ul>
+
+<p>👉 However, it still depends on trust between operators.</p>
+
+<hr>
+
+<h2>7.2 LTE core architecture</h2>
+
+<table>
+<tr>
+<th>Element</th>
+<th>Function</th>
+</tr>
+<tr>
+<td>MME</td>
+<td>Manages mobility and authentication</td>
+</tr>
+<tr>
+<td>HSS</td>
+<td>Subscriber database</td>
+</tr>
+<tr>
+<td>SGW</td>
+<td>Routes traffic within the network</td>
+</tr>
+<tr>
+<td>PGW</td>
+<td>Connects to the internet</td>
+</tr>
+<tr>
+<td>PCRF</td>
+<td>Defines policies and charging rules</td>
+</tr>
+</table>
+
+<p>👉 Diameter connects all these elements.</p>
+
+<hr>
+
+<h2>7.3 Important Diameter interfaces</h2>
+
+<table>
+<tr><th>Interface</th><th>Connection</th><th>Function</th></tr>
+<tr><td>S6a</td><td>MME ↔ HSS</td><td>Authentication</td></tr>
+<tr><td>Gx</td><td>PGW ↔ PCRF</td><td>Policy/QoS</td></tr>
+<tr><td>Gy</td><td>PGW ↔ OCS</td><td>Online charging</td></tr>
+<tr><td>Sh</td><td>AS ↔ HSS</td><td>User data</td></tr>
+</table>
+
+<p>👉 Each interface is a potential attack surface.</p>
+
+<hr>
+
+<h2>7.4 Real flow – network attach</h2>
+
+<table>
+<tr><th>Step</th><th>Action</th></tr>
+<tr><td>1</td><td>UE connects to eNodeB</td></tr>
+<tr><td>2</td><td>MME sends Update Location Request (ULR)</td></tr>
+<tr><td>3</td><td>HSS responds with ULA</td></tr>
+<tr><td>4</td><td>Authentication is performed</td></tr>
+<tr><td>5</td><td>Data session is created</td></tr>
+</table>
+
+<p>👉 This flow is critical — any failure affects all users.</p>
+
+<hr>
+
+<h2>7.5 Example Diameter message</h2>
+
+<pre>
+Command: Update Location Request (ULR)
+IMSI: 724XXXXXXXXXXXX
+Visited-PLMN: 724XX
+</pre>
+
+<p>👉 This message registers a user in the network.</p>
+
+<hr>
+
+<h2>7.6 The main risk of Diameter</h2>
+
+<p>Although more modern than SS7, Diameter still has issues:</p>
+
+<ul>
+<li>High complexity</li>
+<li>System interdependencies</li>
+<li>Automatic retries</li>
+<li>Trust between roaming partners</li>
+</ul>
+
+<p>👉 This creates a perfect scenario for large-scale failures.</p>
+
+<hr>
+
+<h2>7.7 Diameter Storm (in depth)</h2>
+
+<h3>⚠️ Definition</h3>
+
+<p>A <strong>Diameter Storm</strong> occurs when a massive volume of messages overwhelms the network.</p>
+
+<h3>🧠 How does it start?</h3>
+
+<ul>
+<li>Failure in a network element (e.g., HSS)</li>
+<li>Timeout responses</li>
+<li>MME retrying requests</li>
+</ul>
+
+<h3>🔗 Cascade effect</h3>
+
+<table>
+<tr><th>Step</th><th>Description</th></tr>
+<tr><td>1</td><td>Initial HSS failure</td></tr>
+<tr><td>2</td><td>MME sends multiple retries</td></tr>
+<tr><td>3</td><td>Other MMEs do the same</td></tr>
+<tr><td>4</td><td>Traffic grows exponentially</td></tr>
+<tr><td>5</td><td>Network collapses</td></tr>
+</table>
+
+<p><strong>Result:</strong></p>
+<ul>
+<li>Users cannot connect</li>
+<li>Sessions drop</li>
+<li>Network instability</li>
+</ul>
+
+<hr>
+
+<h2>7.8 Attack – intentional overload</h2>
+
+<h3>🎯 Objective</h3>
+<p>Bring down the 4G network</p>
+
+<h3>🔗 Kill chain</h3>
+
+<table>
+<tr><th>Step</th><th>Action</th></tr>
+<tr><td>1</td><td>Attacker sends multiple requests</td></tr>
+<tr><td>2</td><td>Generates artificial load</td></tr>
+<tr><td>3</td><td>Forces automatic retries</td></tr>
+<tr><td>4</td><td>Saturates HSS/MME</td></tr>
+<tr><td>5</td><td>Network collapses</td></tr>
+</table>
+
+<hr>
+
+<h2>7.9 Attack – policy manipulation (Gx)</h2>
+
+<h3>🎯 Objective</h3>
+<p>Alter QoS or billing rules</p>
+
+<h3>🔗 Flow</h3>
+
+<table>
+<tr><th>Step</th><th>Message</th><th>Description</th></tr>
+<tr><td>1</td><td>CCR</td><td>Requests policy</td></tr>
+<tr><td>2</td><td>CCA</td><td>Returns rules</td></tr>
+<tr><td>3</td><td>Manipulation</td><td>QoS altered</td></tr>
+</table>
+
+<p><strong>Impact:</strong> fraud or service degradation.</p>
+
+<hr>
+
+<h2>7.10 Attack – data leakage</h2>
+
+<h3>🎯 Objective</h3>
+<p>Access subscriber data</p>
+
+<h3>🔗 Flow</h3>
+
+<table>
+<tr><th>Step</th><th>Interface</th><th>Description</th></tr>
+<tr><td>1</td><td>Sh</td><td>Queries HSS data</td></tr>
+<tr><td>2</td><td>Response</td><td>Receives user profile</td></tr>
+</table>
+
+<p><strong>Impact:</strong> sensitive data exposure.</p>
+
+<hr>
+
+<h2>7.11 How operators defend themselves</h2>
+
+<table>
+<tr><th>Control</th><th>Description</th></tr>
+<tr><td>Diameter Firewall</td><td>Filters suspicious messages</td></tr>
+<tr><td>Rate limiting</td><td>Prevents storms</td></tr>
+<tr><td>Load balancing</td><td>Distributes traffic</td></tr>
+<tr><td>Timeout tuning</td><td>Reduces retries</td></tr>
+<tr><td>Monitoring</td><td>Detects anomalies</td></tr>
+</table>
+
+<p><strong>Main rule:</strong></p>
+<p>❌ Do not trust network behavior<br>
+✅ Assume failures and limit impact</p>
+
+<hr>
+
+<h2>7.12 Business impact</h2>
+
+<ul>
+<li>Network outages (millions of users)</li>
+<li>Revenue loss</li>
+<li>Critical service disruption</li>
+<li>Reputation damage</li>
+</ul>
+
+<p>👉 Unlike SS7, the problem here is scale.</p>
+
+<hr>
+
+<h2>7.13 Conclusion</h2>
+
+<p>Diameter brought major improvements, but also new risks:</p>
+
+<ul>
+<li>More advanced architecture</li>
+<li>Extremely complex system</li>
+<li>Susceptible to cascading failures</li>
+</ul>
+
+<p><strong>In 4G, the biggest enemy is not only the attacker — but the network’s own domino effect.</strong></p>
+
+<footer>
+<p>End of Chapter 7 – Diameter in Depth</p>
+</footer>
+
+</body>
+</html>

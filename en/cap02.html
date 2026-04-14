@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 2 – Mobile Network Security (SS7, 4G and 5G)</title>
+
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+    vertical-align: top;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 2 – Mobile Network Security (SS7, 4G and 5G)</h1>
+
+<p>Now that you already understand how mobile networks work, it is time to explore one of the most important — and least visible — topics in this universe: <strong>security</strong>.</p>
+
+<p>Mobile networks have evolved significantly in speed and capacity, but security has not always kept pace with this growth. This has opened the door to attacks that can affect users, operators, and even financial systems.</p>
+
+<h2>2.1 The fundamental problem</h2>
+
+<p><strong>“All operators are trustworthy.”</strong></p>
+
+<p>👉 Result: external networks can send malicious commands.</p>
+
+<h2>2.2 Evolution of mobile network security</h2>
+
+<table>
+<tr><th>Generation</th><th>Protocol</th><th>Security model</th></tr>
+<tr><td>2G / 3G</td><td>SS7</td><td>Implicit trust</td></tr>
+<tr><td>4G</td><td>Diameter</td><td>Trust between partners</td></tr>
+<tr><td>5G</td><td>APIs (HTTP/2)</td><td>Service-based architecture</td></tr>
+</table>
+
+<ul>
+<li>SS7 is vulnerable by design</li>
+<li>4G still relies on trusted partners</li>
+<li>5G exposes functions via APIs</li>
+</ul>
+
+<h2>2.3 Risk assessment methodology</h2>
+
+<ul>
+<li>Severity: Low (+1), Medium (+2), High (+3), Critical (+4)</li>
+<li>MSISDN usage: +2</li>
+<li>Location impact: +3</li>
+<li>Intercept impact: +3</li>
+<li>External origin: +2</li>
+</ul>
+
+<p>👉 The higher the score, the higher the priority.</p>
+
+<h2>2.4 Executive risk overview</h2>
+
+<table>
+<tr><th>Category</th><th>Average risk</th><th>Impact</th></tr>
+<tr><td>📍 Tracking</td><td>🔴 Very High</td><td>Location</td></tr>
+<tr><td>📡 Interception</td><td>🔴 Critical</td><td>Calls/SMS</td></tr>
+<tr><td>🔓 Data Disclosure</td><td>🔴 Critical</td><td>Data</td></tr>
+<tr><td>💸 Fraud</td><td>🟠 High</td><td>Financial</td></tr>
+<tr><td>⚙️ DoS</td><td>🟠 High</td><td>Availability</td></tr>
+</table>
+
+<h2>2.5 Main attack categories</h2>
+
+<h3>📍 Tracking</h3>
+<table>
+<tr><th>Technology</th><th>Example</th><th>Score</th></tr>
+<tr><td>SS7</td><td>AnyTimeInterrogation</td><td>10/10</td></tr>
+<tr><td>4G</td><td>Provide Subscriber Info</td><td>9/10</td></tr>
+<tr><td>5G</td><td>APIs</td><td>7/10</td></tr>
+</table>
+
+<h3>📡 Interception</h3>
+<table>
+<tr><th>Technology</th><th>Example</th><th>Score</th></tr>
+<tr><td>SS7</td><td>SendRoutingInfo</td><td>10/10</td></tr>
+<tr><td>4G</td><td>Update Location</td><td>9/10</td></tr>
+<tr><td>5G</td><td>Session control</td><td>7/10</td></tr>
+</table>
+
+<h3>🔓 Data Disclosure</h3>
+<table>
+<tr><th>Technology</th><th>Example</th><th>Score</th></tr>
+<tr><td>SS7</td><td>SendIMSI</td><td>10/10</td></tr>
+<tr><td>4G</td><td>AIR</td><td>9/10</td></tr>
+<tr><td>5G</td><td>UDM APIs</td><td>7/10</td></tr>
+</table>
+
+<h2>2.6 Priorities</h2>
+
+<ul>
+<li>🔴 Critical: Tracking and interception</li>
+<li>🟠 High: Fraud</li>
+<li>🟡 Medium: DoS</li>
+</ul>
+
+<h2>2.7 Simple explanation</h2>
+
+<ul>
+<li>SS7 = no security</li>
+<li>4G = partial trust</li>
+<li>5G = exposed APIs</li>
+</ul>
+
+<h2>2.8 Protection</h2>
+
+<ul>
+<li>SS7/Diameter firewalls</li>
+<li>API protection</li>
+<li>Monitoring</li>
+</ul>
+
+<h2>2.9 Conclusion</h2>
+
+<p>Security has evolved, but risks still remain.</p>
+
+<ul>
+<li>SS7 → vulnerable by design</li>
+<li>4G → vulnerable due to trust</li>
+<li>5G → vulnerable due to APIs</li>
+</ul>
+
+<h2>2.10 Detailed attack scoring</h2>
+
+<p>Below are real examples with explained scoring:</p>
+
+<table>
+<tr>
+<th>Attack</th>
+<th>Score</th>
+<th>How it was calculated</th>
+</tr>
+
+<tr>
+<td>AnyTimeInterrogation (MSISDN)</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+MSISDN (+2)<br>
+Location (+3)<br>
+External (+2)<br>
+Total: 11 → 10
+</td>
+</tr>
+
+<tr>
+<td>SendRoutingInfo</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+Interception (+3)<br>
+MSISDN (+2)<br>
+External (+2)<br>
+Total: 11 → 10
+</td>
+</tr>
+
+<tr>
+<td>SendIdentification</td>
+<td><strong>10/10</strong></td>
+<td>
+Critical (+4)<br>
+IMSI exposure (+3)<br>
+External (+2)<br>
+Total: 9 → adjusted to 10
+</td>
+</tr>
+
+<tr>
+<td>ActivateSS</td>
+<td><strong>8/10</strong></td>
+<td>
+High (+3)<br>
+Fraud (+3)<br>
+External (+2)<br>
+Total: 8
+</td>
+</tr>
+
+<tr>
+<td>CAMEL InitiateCallAttempt</td>
+<td><strong>6/10</strong></td>
+<td>
+Medium (+2)<br>
+Fraud (+2)<br>
+External (+2)<br>
+Total: 6
+</td>
+</tr>
+
+<tr>
+<td>FailureReport</td>
+<td><strong>3/10</strong></td>
+<td>
+Low (+1)<br>
+External (+2)<br>
+Total: 3
+</td>
+</tr>
+
+</table>
+
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li>9–10: critical</li>
+<li>7–8: high</li>
+<li>5–6: medium</li>
+<li>0–4: low</li>
+</ul>
+
+<footer>
+<p>End of Chapter 2 – Mobile Network Security</p>
+</footer>
+
+</body>
+</html>

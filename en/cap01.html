@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 1 – Basic Concepts of Mobile Networks</title>
+
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+
+  h1, h2, h3 {
+    color: #60a5fa;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 20px 0;
+    background: #293845;
+  }
+
+  th, td {
+    border: 1px solid #3e4f65;
+    padding: 10px;
+  }
+
+  th {
+    background: #3b82f6;
+    color: white;
+  }
+
+  pre {
+    background: #2d3b4e;
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  ul, ol {
+    max-width: 900px;
+  }
+
+  p {
+    max-width: 900px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 1 – Basic Concepts of Mobile Networks</h1>
+
+<p>This chapter introduces the fundamentals of mobile networks, explaining key concepts, the evolution of generations, main components, and how everything works so your phone can connect to the internet and make calls. It is designed to be easy to understand even without technical background.</p>
+
+<h2>1.1 What are mobile networks?</h2>
+
+<p>Mobile networks are wireless communication systems that allow devices to connect without cables, enabling communication and internet access while moving, at home, in a car, or anywhere. The main feature is <strong>mobility</strong> — your device does not need to be physically connected.</p>
+
+<p>These networks use radio waves to transmit information between your device, known as <em>User Equipment (UE)</em>, and radio towers deployed across the territory. These towers connect to a core system called the <em>core network</em>, which manages communication, authentication, and data routing to the internet.</p>
+
+<h3>Why doesn’t your phone lose signal when you move?</h3>
+
+<p>When you move, your device automatically switches between antennas — a process called <em>handover</em>. This happens seamlessly so calls, videos, and browsing continue without interruption.</p>
+
+<h2>1.2 Evolution of mobile generations: from 2G to 5G</h2>
+
+<p>Mobile technology has evolved significantly through generations, commonly called <em>G</em> (generation). Each one brought improvements in speed, capacity, and architecture.</p>
+
+<table>
+<thead>
+<tr><th>Generation</th><th>Main Features</th><th>Typical Speed</th><th>Examples</th></tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>2G</strong></td>
+<td>Digital communication and SMS, voice-focused.</td>
+<td>Up to 64 kbps</td>
+<td>GSM, CDMA</td>
+</tr>
+<tr>
+<td><strong>3G</strong></td>
+<td>Mobile internet and video calls.</td>
+<td>Up to several Mbps</td>
+<td>UMTS, HSPA</td>
+</tr>
+<tr>
+<td><strong>4G</strong></td>
+<td>All-IP network, high speed, low latency.</td>
+<td>Tens to hundreds of Mbps</td>
+<td>LTE</td>
+</tr>
+<tr>
+<td><strong>5G</strong></td>
+<td>Ultra-fast speed, near-zero latency, massive IoT support.</td>
+<td>Gbps range</td>
+<td>NR (New Radio)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>How do these generations impact daily life?</h3>
+
+<ul>
+<li><strong>2G:</strong> Enabled text messaging and digital voice calls.</li>
+<li><strong>3G:</strong> Made mobile internet usable for browsing and basic video.</li>
+<li><strong>4G:</strong> Enabled HD streaming, online gaming, and smooth video calls.</li>
+<li><strong>5G:</strong> Enables smart cities, autonomous cars, and massive IoT connectivity.</li>
+</ul>
+
+<h2>1.3 Main components of a mobile network</h2>
+
+<h3>1.3.1 UE (User Equipment)</h3>
+
+<p>Your phone, tablet, or connected device. Each UE has a SIM card containing its identity (IMSI). It is the starting point of communication.</p>
+
+<h3>1.3.2 Radio Access Network (RAN)</h3>
+
+<p>The part of the network responsible for wireless communication.</p>
+
+<ul>
+<li><strong>4G:</strong> eNodeB (radio base station)</li>
+<li><strong>5G:</strong> gNodeB</li>
+</ul>
+
+<h3>1.3.3 Core Network</h3>
+
+<p>The “brain” of the network, responsible for mobility, authentication, routing, and connectivity.</p>
+
+<ul>
+<li><strong>MME:</strong> mobility and authentication control</li>
+<li><strong>HSS:</strong> subscriber database</li>
+<li><strong>SGW:</strong> data routing</li>
+<li><strong>PGW:</strong> internet gateway</li>
+</ul>
+
+<h2>1.4 Bearers and Quality of Service (QoS)</h2>
+
+<p>Data is carried through logical channels called <strong>bearers</strong>, each with different priority levels.</p>
+
+<p>Voice requires low latency, while file downloads tolerate delays.</p>
+
+<p><strong>QoS</strong> ensures each type of traffic receives proper treatment.</p>
+
+<h3>Types of bearers</h3>
+
+<ul>
+<li><strong>Default bearer:</strong> created automatically for general data</li>
+<li><strong>Dedicated bearer:</strong> reserved for specific services like voice/video</li>
+</ul>
+
+<h2>1.5 Important terms</h2>
+
+<table>
+<thead>
+<tr><th>Term</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>IMSI</td><td>Unique subscriber identifier</td></tr>
+<tr><td>MSISDN</td><td>Phone number</td></tr>
+<tr><td>APN</td><td>Access point name</td></tr>
+<tr><td>RRC</td><td>Radio control protocol</td></tr>
+<tr><td>NAS</td><td>Core network signaling protocol</td></tr>
+</tbody>
+</table>
+
+<h2>1.6 Simple 4G architecture view</h2>
+
+<p>[ UE ] <--radio--> [ eNodeB ] <--S1--> [ Core Network ] <--internet--></p>
+
+<h2>1.7 Mobility and handover</h2>
+
+<p>When moving during a call or data session, the device switches towers without interruption. This is called <strong>handover</strong>.</p>
+
+<ul>
+  <li><strong>Intra-eNodeB:</strong> within same tower</li>
+  <li><strong>Inter-eNodeB:</strong> between towers</li>
+  <li><strong>Inter-RAT:</strong> between technologies (e.g., 4G to 3G)</li>
+</ul>
+
+<p>MME coordinates these transitions to avoid service interruption.</p>
+
+<h2>1.8 Mobile network security</h2>
+
+<ul>
+  <li><strong>Authentication:</strong> verifies user identity via SIM</li>
+  <li><strong>Encryption:</strong> protects data from interception</li>
+  <li><strong>Integrity:</strong> ensures data is not modified</li>
+</ul>
+
+<h2>1.9 Network protocols</h2>
+
+<table>
+<thead>
+<tr><th>Protocol</th><th>Function</th></tr>
+</thead>
+<tbody>
+<tr><td>RRC</td><td>Radio control</td></tr>
+<tr><td>NAS</td><td>Core signaling</td></tr>
+<tr><td>S1AP</td><td>eNodeB ↔ MME communication</td></tr>
+<tr><td>GTP</td><td>Data tunneling</td></tr>
+</tbody>
+</table>
+
+<h2>1.10 Architecture summary</h2>
+
+<table>
+<thead>
+<tr><th>Element</th><th>Function</th></tr>
+</thead>
+<tbody>
+<tr><td>UE</td><td>User device</td></tr>
+<tr><td>eNodeB</td><td>Radio access</td></tr>
+<tr><td>MME</td><td>Mobility & authentication</td></tr>
+<tr><td>SGW</td><td>Data routing</td></tr>
+<tr><td>PGW</td><td>Internet connection</td></tr>
+<tr><td>HSS</td><td>Subscriber database</td></tr>
+</tbody>
+</table>
+
+<h2>1.11 Why understand mobile networks?</h2>
+
+<ul>
+  <li>Fix connectivity issues</li>
+  <li>Understand network limitations</li>
+  <li>Prepare for 5G evolution</li>
+  <li>Build technical career skills</li>
+</ul>
+
+<h2>1.12 The hidden side: security</h2>
+
+<p>Mobile networks were not originally designed for modern cyberattacks, which creates vulnerabilities that evolved over time.</p>
+
+<h2>1.13 Security evolution</h2>
+
+<table>
+<thead>
+<tr><th>Generation</th><th>Security Model</th></tr>
+</thead>
+<tbody>
+<tr><td>2G/3G</td><td>Full trust (SS7)</td></tr>
+<tr><td>4G</td><td>Trusted partners (Diameter)</td></tr>
+<tr><td>5G</td><td>API-based exposure</td></tr>
+</tbody>
+</table>
+
+<p>Security improved, but risks remain — they just changed form.</p>
+
+<h2>1.14 Types of attacks</h2>
+
+<ul>
+<li>📍 Tracking</li>
+<li>📡 Interception</li>
+<li>🔓 Data leakage</li>
+<li>💸 Fraud</li>
+<li>⚙️ Denial of Service</li>
+</ul>
+
+<h2>1.15 Risk dashboard</h2>
+
+<table>
+<thead>
+<tr><th>Category</th><th>Risk</th><th>Impact</th></tr>
+</thead>
+<tbody>
+<tr><td>Tracking</td><td>Very High</td><td>Location exposure</td></tr>
+<tr><td>Interception</td><td>Critical</td><td>Calls and SMS</td></tr>
+<tr><td>Data Leak</td><td>Critical</td><td>Sensitive data</td></tr>
+<tr><td>Fraud</td><td>High</td><td>Financial loss</td></tr>
+<tr><td>DoS</td><td>High</td><td>Service outage</td></tr>
+</tbody>
+</table>
+
+<h2>1.16 Simple analogy</h2>
+
+<p>2G/3G: building with no security → anyone enters</p>
+<p>4G: trusted guests system → still risky</p>
+<p>5G: modern system → but if hacked, everything opens</p>
+
+<h2>1.17 Operator protections</h2>
+
+<ul>
+<li>Signaling firewalls</li>
+<li>Access control between networks</li>
+<li>Source validation</li>
+<li>API security</li>
+<li>Real-time monitoring</li>
+</ul>
+
+<h2>1.18 Conclusion</h2>
+
+<p>Mobile network security has evolved, but remains a major challenge.</p>
+
+<ul>
+<li>SS7 = insecure by design</li>
+<li>4G = trust-based risk</li>
+<li>5G = API exposure risk</li>
+</ul>
+
+<p><strong>End of Chapter 1</strong></p>
+
+</body>
+</html>

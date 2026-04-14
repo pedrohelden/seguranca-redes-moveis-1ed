@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 9 – Arquitetura de Defesa em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 9 – Arquitetura de Defesa em Redes Móveis</h1>
+
+<p>Depois de entender como os ataques funcionam e como os protocolos operam, chegamos ao ponto mais crítico para qualquer operadora:</p>
+
+<p><strong>Como projetar uma arquitetura que realmente resista a ataques?</strong></p>
+
+<p>Este capítulo mostra como a defesa é construída na prática — não como teoria, mas como arquitetura real de rede.</p>
+
+---
+
+<h2>9.1 O problema da confiança</h2>
+
+<p>Historicamente, redes móveis foram construídas com base em confiança:</p>
+
+<ul>
+<li>SS7 confia em qualquer rede conectada</li>
+<li>4G confia em parceiros de roaming</li>
+<li>5G confia em autenticação entre serviços</li>
+</ul>
+
+<p>👉 Esse modelo falhou.</p>
+
+<p><strong>A arquitetura moderna precisa assumir que qualquer origem pode ser maliciosa.</strong></p>
+
+---
+
+<h2>9.2 Princípio central: Zero Trust em Telecom</h2>
+
+<p>Zero Trust significa:</p>
+
+<ul>
+<li>Validar toda mensagem</li>
+<li>Verificar identidade e contexto</li>
+<li>Aplicar políticas explícitas</li>
+</ul>
+
+<p>Na prática:</p>
+
+<ul>
+<li>Não confiar em GT (SS7) automaticamente</li>
+<li>Não confiar em peer Diameter</li>
+<li>Não confiar em API interna no 5G</li>
+</ul>
+
+---
+
+<h2>9.3 Arquitetura de defesa em camadas</h2>
+
+<p>A segurança eficiente não depende de um único elemento — ela é distribuída.</p>
+
+<table>
+<tr>
+<th>Camada</th>
+<th>Função</th>
+<th>Exemplo de controle</th>
+</tr>
+<tr>
+<td>Interconnect</td>
+<td>Controle de entrada</td>
+<td>SS7/Diameter Firewall</td>
+</tr>
+<tr>
+<td>Core</td>
+<td>Validação lógica</td>
+<td>HLR/HSS/UDM checks</td>
+</tr>
+<tr>
+<td>Aplicação</td>
+<td>Controle de acesso</td>
+<td>OAuth / API Gateway</td>
+</tr>
+<tr>
+<td>Monitoramento</td>
+<td>Detecção</td>
+<td>SOC / Analytics</td>
+</tr>
+</table>
+
+<p>👉 Defesa real = múltiplas camadas funcionando juntas.</p>
+
+---
+
+<h2>9.4 SS7 Firewall (2G/3G)</h2>
+
+<p>O SS7 Firewall é a primeira linha de defesa contra ataques clássicos.</p>
+
+<h3>Funções principais:</h3>
+
+<ul>
+<li>Filtragem por tipo de mensagem (MAP/CAP)</li>
+<li>Validação de Global Title (GT)</li>
+<li>Controle por país ou operadora</li>
+<li>Inspeção de parâmetros (IMSI, MSISDN)</li>
+</ul>
+
+<h3>Exemplos de bloqueio:</h3>
+
+<table>
+<tr>
+<th>Ataque</th>
+<th>Ação do firewall</th>
+</tr>
+<tr>
+<td>AnyTimeInterrogation</td>
+<td>Bloquear origem externa</td>
+</tr>
+<tr>
+<td>SendIMSI</td>
+<td>Negar resposta</td>
+</tr>
+<tr>
+<td>SendRoutingInfo</td>
+<td>Permitir apenas parceiros autorizados</td>
+</tr>
+</table>
+
+<p><strong>Limitação importante:</strong></p>
+
+<p>O SS7 Firewall depende de regras — e regras podem ser burladas.</p>
+
+---
+
+<h2>9.5 Diameter Firewall (4G)</h2>
+
+<p>No 4G, o controle ocorre sobre o protocolo Diameter.</p>
+
+<h3>Funções:</h3>
+
+<ul>
+<li>Validação de peers (realm, host)</li>
+<li>Controle de sessão</li>
+<li>Rate limiting</li>
+<li>Detecção de storm</li>
+</ul>
+
+<h3>Exemplos:</h3>
+
+<ul>
+<li>Bloquear excesso de <code>ULR</code></li>
+<li>Validar <code>CCR</code> para evitar fraude</li>
+<li>Detectar loops de signaling</li>
+</ul>
+
+<p><strong>Ponto crítico:</strong></p>
+
+<p>Diameter é mais estruturado que SS7, mas ainda depende de confiança entre redes.</p>
+
+---
+
+<h2>9.6 Proteção no 5G (API Security)</h2>
+
+<p>No 5G, o foco muda completamente: agora estamos protegendo APIs.</p>
+
+<h3>Elementos principais:</h3>
+
+<ul>
+<li>API Gateway</li>
+<li>Service Mesh</li>
+<li>Autenticação OAuth2</li>
+<li>mTLS (mutual TLS)</li>
+</ul>
+
+<h3>Fluxo seguro:</h3>
+
+<ol>
+<li>Serviço solicita token</li>
+<li>Token é validado</li>
+<li>Comunicação ocorre via mTLS</li>
+<li>Request é auditado</li>
+</ol>
+
+<p>👉 Isso aproxima telecom do mundo de cloud e microserviços.</p>
+
+---
+
+<h2>9.7 Allow-list vs Block-list</h2>
+
+<p>Existem dois modelos principais de controle:</p>
+
+<table>
+<tr>
+<th>Modelo</th>
+<th>Descrição</th>
+<th>Risco</th>
+</tr>
+<tr>
+<td>Block-list</td>
+<td>Bloqueia o que é conhecido como malicioso</td>
+<td>Alto (ataques novos passam)</td>
+</tr>
+<tr>
+<td>Allow-list</td>
+<td>Permite apenas o que é explicitamente autorizado</td>
+<td>Baixo (mais seguro)</td>
+</tr>
+</table>
+
+<p><strong>Melhor prática:</strong></p>
+
+<p>👉 Usar allow-list sempre que possível.</p>
+
+---
+
+<h2>9.8 Validação de contexto (o segredo da defesa)</h2>
+
+<p>Não basta olhar a mensagem — é preciso entender o contexto.</p>
+
+<h3>Exemplos:</h3>
+
+<ul>
+<li>IMSI pertence à rede?</li>
+<li>Origem da mensagem faz sentido?</li>
+<li>Usuário está em roaming?</li>
+</ul>
+
+<p>👉 Muitos ataques passam porque parecem “válidos” isoladamente.</p>
+
+---
+
+<h2>9.9 Segmentação de rede</h2>
+
+<p>Uma prática essencial:</p>
+
+<ul>
+<li>Separar tráfego interno e externo</li>
+<li>Isolar funções críticas (HLR, HSS, UDM)</li>
+<li>Controlar acesso entre domínios</li>
+</ul>
+
+<p>👉 Reduz impacto de invasões.</p>
+
+---
+
+<h2>9.10 Rate limiting e proteção contra abuso</h2>
+
+<p>Fundamental contra ataques volumétricos:</p>
+
+<ul>
+<li>Limitar requisições por segundo</li>
+<li>Detectar picos anormais</li>
+<li>Aplicar throttling automático</li>
+</ul>
+
+<p>Exemplo:</p>
+
+<p>Se uma rede envia milhares de ATI por segundo → bloquear automaticamente</p>
+
+---
+
+<h2>9.11 Integração com monitoramento</h2>
+
+<p>Arquitetura de defesa não funciona sem visibilidade.</p>
+
+<ul>
+<li>Logs centralizados</li>
+<li>Correlação de eventos</li>
+<li>Alertas em tempo real</li>
+</ul>
+
+<p>👉 Firewall sem monitoramento é defesa cega.</p>
+
+---
+
+<h2>9.12 Explicação didática</h2>
+
+<p>Imagine a rede como um aeroporto:</p>
+
+<ul>
+<li>SS7 Firewall → controle de passaporte</li>
+<li>Diameter Firewall → controle de embarque</li>
+<li>API Gateway → autenticação digital</li>
+<li>Monitoramento → câmeras e segurança</li>
+</ul>
+
+<p>👉 Segurança real acontece quando tudo trabalha junto.</p>
+
+---
+
+<h2>9.13 Conclusão</h2>
+
+<p>Uma arquitetura segura não depende de um único elemento, mas da combinação de:</p>
+
+<ul>
+<li>Filtragem rigorosa</li>
+<li>Validação de contexto</li>
+<li>Controle de acesso</li>
+<li>Monitoramento contínuo</li>
+</ul>
+
+<p><strong>O objetivo não é impedir todos os ataques — mas tornar a exploração difícil, cara e detectável.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 9 – Arquitetura de Defesa</p>
+</footer>
+
+</body>
+</html>

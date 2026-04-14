@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Chapter 8 – Practical Defense and Security Architecture in Mobile Networks</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Chapter 8 – Practical Defense and Security Architecture in Mobile Networks</h1>
+
+<p>After understanding how attacks work in practice, the most important question arises:</p>
+
+<p><strong>How do you actually defend a real mobile network?</strong></p>
+
+<p>This chapter provides a practical view focused on implementation, operation, and continuous defense — how a real security team (SOC/NOC) actually works.</p>
+
+<hr>
+
+<h2>8.1 The fundamental principle of defense</h2>
+
+<p>The modern security model in mobile networks is based on a simple concept:</p>
+
+<p><strong>Zero Trust: never trust, always verify.</strong></p>
+
+<ul>
+<li>Do not trust external networks</li>
+<li>Do not automatically trust partners</li>
+<li>Validate every message and every request</li>
+</ul>
+
+<p>👉 This is the opposite of the original SS7 model.</p>
+
+<hr>
+
+<h2>8.2 Layered defense architecture</h2>
+
+<p>Effective protection happens across multiple layers:</p>
+
+<table>
+<tr>
+<th>Layer</th>
+<th>Protection</th>
+</tr>
+<tr>
+<td>Edge (Interconnect)</td>
+<td>SS7 / Diameter Firewall</td>
+</tr>
+<tr>
+<td>Core Network</td>
+<td>Message validation</td>
+</tr>
+<tr>
+<td>Application (5G)</td>
+<td>API Security (OAuth, TLS)</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Detection and response</td>
+</tr>
+</table>
+
+<p>👉 If one layer fails, another still protects.</p>
+
+<hr>
+
+<h2>8.3 Signaling firewall (SS7 / Diameter)</h2>
+
+<p>This is the main defense mechanism.</p>
+
+<h3>Main functions:</h3>
+
+<ul>
+<li>Filter messages by type (MAP, CAP, Diameter)</li>
+<li>Validate origin (GT, realm, IP)</li>
+<li>Block illegitimate messages</li>
+<li>Apply partner-based policies</li>
+</ul>
+
+<h3>Practical example:</h3>
+
+<ul>
+<li>Block <code>AnyTimeInterrogation</code> coming from external networks</li>
+<li>Allow <code>SendRoutingInfo</code> only for trusted partners</li>
+</ul>
+
+<hr>
+
+<h2>8.4 Attack-specific protection</h2>
+
+<h3>📍 Tracking (location)</h3>
+
+<ul>
+<li>Block external ATI</li>
+<li>Validate roaming context</li>
+<li>Allow only authorized GMLC</li>
+</ul>
+
+<h3>📡 Interception</h3>
+
+<ul>
+<li>Validate <code>SendRoutingInfo</code></li>
+<li>Check IMSI vs origin consistency</li>
+<li>Block suspicious redirection</li>
+</ul>
+
+<h3>🔓 Data leakage</h3>
+
+<ul>
+<li>Block <code>SendIMSI</code></li>
+<li>Filter <code>SendIdentification</code></li>
+<li>Restrict HLR/HSS queries</li>
+</ul>
+
+<h3>💸 Fraud</h3>
+
+<ul>
+<li>Control CAP (CAMEL)</li>
+<li>Validate charging requests</li>
+<li>Monitor abnormal patterns</li>
+</ul>
+
+<h3>⚙️ DoS</h3>
+
+<ul>
+<li>Rate limiting</li>
+<li>Flood detection</li>
+<li>Automatic blacklisting</li>
+</ul>
+
+<hr>
+
+<h2>8.5 4G security (Diameter)</h2>
+
+<p>Diameter brought improvements, but still relies on trust.</p>
+
+<h3>Main risks:</h3>
+
+<ul>
+<li>Diameter Storm</li>
+<li>CCR-based fraud</li>
+<li>AIR/ULR data leakage</li>
+</ul>
+
+<h3>Controls:</h3>
+
+<ul>
+<li>Diameter Edge Agent (DEA)</li>
+<li>Peer-based rate limiting</li>
+<li>Session validation</li>
+</ul>
+
+<hr>
+
+<h2>8.6 5G security (SBA)</h2>
+
+<p>In 5G, security changes completely:</p>
+
+<ul>
+<li>API-based (HTTP/2)</li>
+<li>Service-based architecture (SBA)</li>
+</ul>
+
+<h3>Risks:</h3>
+
+<ul>
+<li>API exposure</li>
+<li>Lack of strong authentication</li>
+<li>API abuse attacks</li>
+</ul>
+
+<h3>Protections:</h3>
+
+<ul>
+<li>OAuth2</li>
+<li>mTLS (mutual TLS)</li>
+<li>API Gateway</li>
+<li>Service mesh</li>
+</ul>
+
+<hr>
+
+<h2>8.7 Monitoring and detection (SOC/NOC)</h2>
+
+<p>Defense is not only about blocking — it is about observing.</p>
+
+<h3>Attack indicators:</h3>
+
+<table>
+<tr>
+<th>Symptom</th>
+<th>Possible attack</th>
+</tr>
+<tr>
+<td>Many ATI requests</td>
+<td>Tracking</td>
+</tr>
+<tr>
+<td>Routing changes</td>
+<td>Interception</td>
+</tr>
+<tr>
+<td>Signaling spikes</td>
+<td>DoS / Storm</td>
+</tr>
+<tr>
+<td>Unusual requests</td>
+<td>Reconnaissance</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>8.8 Response playbook</h2>
+
+<p>When an attack happens:</p>
+
+<ol>
+<li>Detect (alert)</li>
+<li>Classify (attack type)</li>
+<li>Block source</li>
+<li>Apply firewall rule</li>
+<li>Monitor impact</li>
+</ol>
+
+<p>👉 Response time is critical.</p>
+
+<hr>
+
+<h2>8.9 Security maturity</h2>
+
+<table>
+<tr>
+<th>Level</th>
+<th>Description</th>
+</tr>
+<tr>
+<td>Basic</td>
+<td>Static rules</td>
+</tr>
+<tr>
+<td>Intermediate</td>
+<td>Active monitoring</td>
+</tr>
+<tr>
+<td>Advanced</td>
+<td>Automation + analysis</td>
+</tr>
+<tr>
+<td>Elite</td>
+<td>Real-time detection + AI</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>8.10 Simple explanation</h2>
+
+<p>Imagine the network as a building:</p>
+
+<ul>
+<li>SS7 → open door</li>
+<li>4G → distracted doorman</li>
+<li>5G → digital system with password</li>
+</ul>
+
+<p>But real security is:</p>
+
+<ul>
+<li>Cameras</li>
+<li>Access control</li>
+<li>Continuous monitoring</li>
+</ul>
+
+<p>👉 Having a door is not enough — you must watch it.</p>
+
+<hr>
+
+<h2>8.11 Conclusion</h2>
+
+<p>Defending mobile networks requires:</p>
+
+<ul>
+<li>Secure architecture</li>
+<li>Strict signaling control</li>
+<li>Continuous monitoring</li>
+<li>Fast response</li>
+</ul>
+
+<p><strong>The threat evolves — defense must evolve faster.</strong></p>
+
+<footer>
+<p>End of Chapter 8 – Practical Defense and Security Architecture</p>
+</footer>
+
+</body>
+</html>
