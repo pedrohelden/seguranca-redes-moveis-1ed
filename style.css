@@ -1,12 +1,30 @@
-body {
+/* =========================
+   BASE GLOBAL
+========================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #1e2a38;
   color: #cbd5e1;
-  display: flex;
 }
 
-/* SIDEBAR */
+/* evita zoom/flicker de fonte em alguns browsers */
+body {
+  display: flex;
+  overflow: hidden;
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
 .sidebar {
   width: 320px;
   height: 100vh;
@@ -30,6 +48,7 @@ body {
   padding-right: 8px;
 }
 
+/* scroll bonito */
 .sidebar-inner::-webkit-scrollbar {
   width: 8px;
 }
@@ -59,21 +78,9 @@ body {
   background: #1e293b;
 }
 
-/* CONTEÚDO */
-.content {
-  margin-left: 320px;
-  width: calc(100% - 720px);
-  min-height: 100vh;
-
-  padding: 30px;
-  box-sizing: border-box;
-}
-
-h1,
-h2,
-h3 {
-  color: #60a5fa;
-}
+/* =========================
+   BLOCO (SEÇÕES)
+========================= */
 
 .bloco {
   margin-top: 2px;
@@ -82,9 +89,81 @@ h3 {
   background: #293845;
   border-left: 3px solid #3b82f6;
   border-radius: 4px;
+
+  font-weight: 600;
+  font-size: 13px;
 }
 
-/* CAPA */
+/* =========================
+   CONTEÚDO CENTRAL
+========================= */
+
+.content {
+  margin-left: 320px;
+  width: calc(100% - 720px);
+  min-height: 100vh;
+
+  padding: 30px;
+  overflow-y: auto;
+}
+
+/* garante estabilidade de fonte no conteúdo dinâmico */
+.content h1 {
+  font-size: 28px;
+}
+
+.content h2 {
+  font-size: 22px;
+}
+
+.content h3 {
+  font-size: 18px;
+}
+
+.content p,
+.content li {
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 900px;
+}
+
+/* títulos globais (fallback) */
+h1, h2, h3 {
+  color: #60a5fa;
+}
+
+/* =========================
+   TABELAS E CÓDIGO
+========================= */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 900px;
+  margin: 20px 0;
+  background: #293845;
+}
+
+th, td {
+  border: 1px solid #3e4f65;
+  padding: 10px;
+}
+
+th {
+  background: #3b82f6;
+  color: white;
+}
+
+pre {
+  background: #2d3b4e;
+  padding: 10px;
+  overflow-x: auto;
+}
+
+/* =========================
+   CAPA (DIREITA)
+========================= */
+
 .cover {
   width: 400px;
   height: 100vh;
@@ -101,21 +180,39 @@ h3 {
   justify-content: center;
 
   padding: 20px;
-  box-sizing: border-box;
+}
+
+/* trava estabilidade da capa */
+.cover * {
+  flex-shrink: 0;
 }
 
 .cover img {
   width: 100%;
   max-width: 340px;
-
   border-radius: 10px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* MOBILE */
+/* texto da capa */
+.cover p {
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.cover footer {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
 @media (max-width: 900px) {
   body {
     flex-direction: column;
+    overflow: auto;
   }
 
   .sidebar {
