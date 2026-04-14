@@ -15,7 +15,7 @@ html, body {
   color: #cbd5e1;
 }
 
-/* evita zoom/flicker de fonte em alguns browsers */
+/* evita scroll duplo e flicker */
 body {
   display: flex;
   overflow: hidden;
@@ -100,14 +100,18 @@ body {
 
 .content {
   margin-left: 320px;
-  width: calc(100% - 720px);
-  min-height: 100vh;
+  margin-right: 400px;
 
+  min-height: 100vh;
   padding: 30px;
+
   overflow-y: auto;
+
+  font-size: 16px;
+  line-height: 1.7;
 }
 
-/* garante estabilidade de fonte no conteúdo dinâmico */
+/* títulos consistentes */
 .content h1 {
   font-size: 28px;
 }
@@ -120,23 +124,16 @@ body {
   font-size: 18px;
 }
 
-.content p,
-.content li {
-  font-size: 16px;
-  line-height: 1.7;
-  max-width: 900px;
-}
-
-/* FIX DE CONSISTÊNCIA GLOBAL DE TIPOGRAFIA */
 h1, h2, h3 {
   color: #60a5fa;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
 
-/* títulos globais (fallback) */
-h1, h2, h3 {
-  color: #60a5fa;
+/* textos */
+.content p,
+.content li {
+  max-width: 900px;
 }
 
 /* =========================
@@ -187,9 +184,10 @@ pre {
   justify-content: center;
 
   padding: 20px;
+  box-sizing: border-box;
 }
 
-/* trava estabilidade da capa */
+/* trava estabilidade visual */
 .cover * {
   flex-shrink: 0;
 }
@@ -201,14 +199,10 @@ pre {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-/* texto da capa */
-.cover p {
-  font-size: 14px;
-  margin: 10px 0;
-}
-
+.cover p,
 .cover footer {
   font-size: 14px;
+  margin: 10px 0;
   opacity: 0.85;
 }
 
@@ -230,6 +224,7 @@ pre {
 
   .content {
     margin-left: 0;
+    margin-right: 0;
     width: 100%;
   }
 
