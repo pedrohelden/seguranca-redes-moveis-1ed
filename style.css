@@ -127,6 +127,13 @@ body {
   max-width: 900px;
 }
 
+/* FIX DE CONSISTÊNCIA GLOBAL DE TIPOGRAFIA */
+h1, h2, h3 {
+  color: #60a5fa;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
 /* títulos globais (fallback) */
 h1, h2, h3 {
   color: #60a5fa;
