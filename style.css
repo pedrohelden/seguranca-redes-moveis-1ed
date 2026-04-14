@@ -1,31 +1,12 @@
-
-/* =========================
-   BASE GLOBAL
-========================= */
-
-* {
-  box-sizing: border-box;
-}
-
-html, body {
+body {
   margin: 0;
-  padding: 0;
-  height: 100%;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #1e2a38;
   color: #cbd5e1;
-}
-
-/* evita scroll duplo e flicker */
-body {
   display: flex;
-  overflow: hidden;
 }
 
-/* =========================
-   SIDEBAR
-========================= */
-
+/* SIDEBAR */
 .sidebar {
   width: 320px;
   height: 100vh;
@@ -49,7 +30,6 @@ body {
   padding-right: 8px;
 }
 
-/* scroll bonito */
 .sidebar-inner::-webkit-scrollbar {
   width: 8px;
 }
@@ -79,9 +59,21 @@ body {
   background: #1e293b;
 }
 
-/* =========================
-   BLOCO (SEÇÕES)
-========================= */
+/* CONTEÚDO */
+.content {
+  margin-left: 320px;
+  width: calc(100% - 720px);
+  min-height: 100vh;
+
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3 {
+  color: #60a5fa;
+}
 
 .bloco {
   margin-top: 2px;
@@ -90,85 +82,9 @@ body {
   background: #293845;
   border-left: 3px solid #3b82f6;
   border-radius: 4px;
-
-  font-weight: 600;
-  font-size: 13px;
 }
 
-/* =========================
-   CONTEÚDO CENTRAL
-========================= */
-
-.content {
-  margin-left: 320px;
-  margin-right: 400px;
-
-  min-height: 100vh;
-  padding: 30px;
-
-  overflow-y: auto;
-
-  font-size: 16px;
-  line-height: 1.7;
-}
-
-/* títulos consistentes */
-.content h1 {
-  font-size: 28px;
-}
-
-.content h2 {
-  font-size: 22px;
-}
-
-.content h3 {
-  font-size: 18px;
-}
-
-h1, h2, h3 {
-  color: #60a5fa;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-}
-
-/* textos */
-.content p,
-.content li {
-  max-width: 900px;
-}
-
-/* =========================
-   TABELAS E CÓDIGO
-========================= */
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  max-width: 900px;
-  margin: 20px 0;
-  background: #293845;
-}
-
-th, td {
-  border: 1px solid #3e4f65;
-  padding: 10px;
-}
-
-th {
-  background: #3b82f6;
-  color: white;
-}
-
-pre {
-  background: #2d3b4e;
-  padding: 10px;
-  overflow-x: auto;
-}
-
-/* =========================
-   CAPA (DIREITA)
-========================= */
-
+/* CAPA */
 .cover {
   width: 400px;
   height: 100vh;
@@ -188,34 +104,18 @@ pre {
   box-sizing: border-box;
 }
 
-/* trava estabilidade visual */
-.cover * {
-  flex-shrink: 0;
-}
-
 .cover img {
   width: 100%;
   max-width: 340px;
+
   border-radius: 10px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
-.cover p,
-.cover footer {
-  font-size: 14px;
-  margin: 10px 0;
-  opacity: 0.85;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
+/* MOBILE */
 @media (max-width: 900px) {
-
   body {
     flex-direction: column;
-    overflow: auto;
   }
 
   .sidebar {
@@ -225,10 +125,8 @@ pre {
   }
 
   .content {
-    margin: 0 !important;
-    width: 100% !important;
-    min-height: auto;
-    overflow: visible;
+    margin-left: 0;
+    width: 100%;
   }
 
   .cover {
