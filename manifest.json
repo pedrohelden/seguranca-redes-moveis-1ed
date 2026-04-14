@@ -1,0 +1,15 @@
+{
+  "name": "Segurança em Redes Móveis: Ataques, Defesa e o Futuro do 5G",
+  "short_name": "Segurança Redes Móveis",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
