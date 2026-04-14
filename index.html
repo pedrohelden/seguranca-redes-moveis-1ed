@@ -1,13 +1,14 @@
 <script>
 (function () {
-//  const lang = (navigator.language || "pt").toLowerCase();
+  const lang = (navigator.language || "").toLowerCase();
 
-//  const isPT = lang.startsWith("pt");
+  const isPT = lang.startsWith("pt");
 
-//  if (isPT) {
-//    window.location.replace("./br/");
-//  } else {
-    window.location.replace("./en/");
-//  }
+  // regra:
+  // PT só se navegador for claramente português
+  // caso contrário → inglês (default)
+  const target = isPT ? "./br/" : "./en/";
+
+  window.location.replace(target);
 })();
 </script>
