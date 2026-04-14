@@ -1,4 +1,4 @@
-const CACHE_NAME = "ebook-cache-v4";
+const CACHE_NAME = "ebook-cache-v5";
 
 // versao com suporte multi-language
 // arquivos essenciais (shell do app)

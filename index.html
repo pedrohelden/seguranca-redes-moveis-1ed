@@ -1,14 +1,26 @@
 <script>
 (function () {
+
+  // 1. PRIORIDADE MÁXIMA: URL manual
+  const params = new URLSearchParams(window.location.search);
+  const forced = params.get("lang");
+
+  if (forced === "pt") {
+    return window.location.replace("./br/");
+  }
+  if (forced === "en") {
+    return window.location.replace("./en/");
+  }
+
+  // 2. DETECÇÃO AUTOMÁTICA DO NAVEGADOR
   const lang = (navigator.language || "").toLowerCase();
 
   const isPT = lang.startsWith("pt");
 
-  // regra:
-  // PT só se navegador for claramente português
-  // caso contrário → inglês (default)
+  // 3. DEFAULT GLOBAL (anônimo ou qualquer outro caso)
   const target = isPT ? "./br/" : "./en/";
 
   window.location.replace(target);
+
 })();
 </script>
