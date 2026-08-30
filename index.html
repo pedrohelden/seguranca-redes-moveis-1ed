@@ -1,1007 +1,143 @@
+
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Índice – Segurança em Redes Móveis</title>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
 
-<title>4G-5G Networks</title>
+<meta name="theme-color" content="#000000">
 
-<meta name="theme-color" content="#101820">
-
-<style>
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-    box-sizing: border-box;
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
 }
-
-html,
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
-}
-
-body {
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-    background: #101820;
-    color: #d8e0e8;
-
-    line-height: 1.6;
-}
-
-
-/* =========================================================
-   MAIN BOOK LAYOUT
-========================================================= */
-
-.book {
-    min-height: 100vh;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(280px, 1fr)
-        minmax(320px, 480px)
-        minmax(280px, 1fr);
-
-    gap: 0;
-
-    background:
-        radial-gradient(
-            circle at center,
-            #263746 0%,
-            #101820 65%
-        );
-}
-
-
-/* =========================================================
-   LEFT — BOOK CONTENT
-========================================================= */
-
-.book-content {
-
-    padding: 28px 23px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-right: 1px solid rgba(255,255,255,0.08);
-}
-
-.book-content-inner {
-
-    width: 100%;
-    max-width: 520px;
-}
-
-.book-content h1 {
-
-    margin: 0;
-
-    font-size: clamp(2rem, 3vw, 3rem);
-
-    line-height: 1.1;
-
-    color: #ffffff;
-
-    letter-spacing: -1px;
-}
-
-.book-content h2 {
-
-    margin: 8px 0 18px;
-
-    font-size: clamp(1.1rem, 1.8vw, 1.5rem);
-
-    font-weight: 400;
-
-    color: #8fc7ff;
-}
-
-.book-content p {
-
-    margin: 0 0 14px;
-
-    font-size: 1rem;
-
-    color: #c3ced8;
-}
-
-
-/* =========================================================
-   HIGHLIGHT BOX
-========================================================= */
-
-.book-highlight {
-
-    margin-top: 22px;
-
-    padding: 16px 19px;
-
-    border-left: 3px solid #4da3ff;
-
-    background: rgba(255,255,255,0.045);
-
-    border-radius: 0 10px 10px 0;
-}
-
-.book-highlight h3 {
-
-    margin: 0 0 8px;
-
-    color: #ffffff;
-
-    font-size: 1rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 1px;
-}
-
-.book-highlight ul {
-
-    margin: 0;
-    padding-left: 20px;
-
-    color: #b9c6d2;
-}
-
-.book-highlight li {
-
-    margin: 3px 0;
-}
-
-
-/* =========================================================
-   BOOK NOTE
-========================================================= */
-
-.book-note {
-
-    margin-top: 18px;
-
-    padding: 14px 16px;
-
-    background: rgba(0,0,0,0.15);
-
-    border-radius: 10px;
-}
-
-.book-note p {
-
-    margin-bottom: 5px;
-
-    font-size: 0.95rem;
-}
-
-
-/* =========================================================
-   CENTER — COVER
-========================================================= */
-
-.cover {
-
-    min-height: 100vh;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    padding: 20px;
-}
-
-.cover-inner {
-
-    width: 100%;
-
-    max-width: 390px;
-
-    text-align: center;
-}
-
-.cover img {
-
-    display: block;
-
-    width: 100%;
-
-    max-height: 70vh;
-
-    object-fit: contain;
-
-    margin: 0 auto;
-
-    border-radius: 4px;
-
-    box-shadow:
-        0 25px 60px rgba(0,0,0,0.55);
-}
-
-.cover h3 {
-
-    margin: 15px 0 5px;
-
-    color: #ffffff;
-
-    font-size: 1.3rem;
-}
-
-.cover p {
-
-    margin: 0;
-
-    color: #aebdca;
-
-    font-size: 0.95rem;
-}
-
-.cover .author {
-
-    margin-top: 8px;
-
-    color: #ffffff;
-
-    font-weight: 500;
-}
-
-
-/* =========================================================
-   LINKEDIN
-========================================================= */
-
-.linkedin {
-
-    display: inline-block;
-
-    margin-top: 12px;
-
-    padding: 9px 17px;
-
-    background: #0a66c2;
-
-    color: white;
-
-    text-decoration: none;
-
-    border-radius: 7px;
-
-    font-weight: 600;
-
-    transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
-}
-
-.linkedin:hover {
-
-    transform: scale(1.04);
-
-    opacity: 0.9;
-}
-
-
-/* =========================================================
-   RIGHT — TABLE OF CONTENTS
-========================================================= */
-
-.toc {
-
-    padding: 23px 18px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-left: 1px solid rgba(255,255,255,0.08);
-}
-
-.toc-inner {
-
-    width: 100%;
-
-    max-width: 470px;
-}
-
-
-/* =========================================================
-   TOC ITEMS
-========================================================= */
-
-.toc-section {
-
-    display: grid;
-
-    grid-template-columns: 38px 1fr;
-
-    align-items: center;
-
-    gap: 10px;
-
-    margin-bottom: 3px;
-}
-
-.toc-section span {
-
-    font-size: 0.75rem;
-
-    font-weight: 700;
-
-    color: #6f879b;
-
-    text-align: right;
-}
-
-.toc-section a {
-
-    display: block;
-
-    padding: 6px 9px;
-
-    color: #c9d4de;
-
-    text-decoration: none;
-
-    font-size: 0.92rem;
-
-    border-radius: 6px;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        padding-left 0.2s ease;
-}
-
-.toc-section a:hover {
-
-    background: rgba(255,255,255,0.06);
-
-    color: #ffffff;
-
-    padding-left: 14px;
-}
-
-
-/* =========================================================
-   FINAL CHAPTER
-========================================================= */
-
-.final-chapter {
-
-    margin-top: 12px;
-
-    padding-top: 10px;
-
-    border-top: 1px solid rgba(255,255,255,0.08);
-}
-
-.final-chapter span {
-
-    color: #8fc7ff;
-}
-
-.final-chapter a {
-
-    color: #ffffff;
-
-    font-weight: 600;
-}
-
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-.toc footer {
-
-    margin-top: 20px;
-
-    padding-top: 10px;
-
-    border-top: 1px solid rgba(255,255,255,0.08);
-
-    color: #738697;
-
-    font-size: 0.8rem;
-}
-
-
-/* =========================================================
-   READING MODE
-========================================================= */
-
-.reader {
-
-    min-height: 100vh;
-
-    background: #101820;
-
-    position: relative;
-}
-
-.reader iframe {
-
-    width: 100%;
-
-    height: 100vh;
-
-    border: none;
-
-    display: block;
-}
-
-.back-button {
-
-    position: fixed;
-
-    top: 15px;
-    left: 15px;
-
-    z-index: 1000;
-
-    padding: 9px 15px;
-
-    border: none;
-
-    border-radius: 7px;
-
-    background: rgba(16,24,32,0.92);
-
-    color: #ffffff;
-
-    cursor: pointer;
-
-    font-size: 0.9rem;
-
-    box-shadow:
-        0 5px 20px rgba(0,0,0,0.35);
-}
-
-.back-button:hover {
-
-    background: #263746;
-}
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1050px) {
-
-    .book {
-
-        grid-template-columns:
-            minmax(230px, 1fr)
-            minmax(280px, 380px)
-            minmax(230px, 1fr);
-    }
-
-    .book-content {
-
-        padding: 18px 13px;
-    }
-
-    .toc {
-
-        padding: 18px 10px;
-    }
-
-    .cover {
-
-        padding: 13px;
-    }
-
-    .toc-section a {
-
-        font-size: 0.82rem;
-    }
-
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 760px) {
-
-    .book {
-
-        display: flex;
-
-        flex-direction: column;
-
-        min-height: 100vh;
-
-        background:
-            linear-gradient(
-                180deg,
-                #101820 0%,
-                #182633 100%
-            );
-    }
-
-
-    /* COVER FIRST */
-
-    .cover {
-
-        order: 1;
-
-        min-height: auto;
-
-        padding: 18px 13px 15px;
-    }
-
-    .cover-inner {
-
-        max-width: 320px;
-    }
-
-    .cover img {
-
-        max-height: 65vh;
-    }
-
-
-    /* CONTENT SECOND */
-
-    .book-content {
-
-        order: 2;
-
-        padding: 18px 13px;
-
-        border-right: none;
-
-        border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .book-content-inner {
-
-        max-width: 600px;
-    }
-
-
-    /* TOC THIRD */
-
-    .toc {
-
-        order: 3;
-
-        padding: 18px 13px 23px;
-
-        border-left: none;
-
-        border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .toc-inner {
-
-        max-width: 600px;
-    }
-
-    .toc h1 {
-
-        font-size: 1.5rem;
-    }
-
-    .toc-section {
-
-        grid-template-columns: 35px 1fr;
-    }
-
-    .toc-section a {
-
-        padding: 8px 9px;
-
-        font-size: 0.9rem;
-    }
-
-}
-
-
-/* =========================================================
-   SMALL PHONES
-========================================================= */
-
-@media (max-width: 400px) {
-
-    .cover {
-
-        padding: 13px 9px;
-    }
-
-    .book-content {
-
-        padding: 15px 9px;
-    }
-
-    .toc {
-
-        padding: 15px 9px 20px;
-    }
-
-    .book-content h1 {
-
-        font-size: 2rem;
-    }
-
-}
-
-</style>
+</script>
 
 </head>
 
 <body>
 
-<!-- =========================================================
-     BOOK
-========================================================= -->
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-inner">
 
-<div class="book">
+    <h1>📡 Segurança em Redes Móveis: Ataques, Defesa e o Futuro do 5G</h1>
+    <h1>📘 Índice</h1>
 
-<!-- =====================================================
-     LEFT — BOOK CONTENT
-====================================================== -->
+    <div class="bloco">🔵 Fundamentos (Cap.1–2)</div>
+    <a href="#" data-page="cap01.html">Capítulo 1: Conceitos Básicos de Redes Móveis</a>
+    <a href="#" data-page="cap02.html">Capítulo 2: Segurança em Redes Móveis: Fundamentos e Modelo de Confiança</a>
 
-<section class="book-content">
+    <div class="bloco">🔴 Ataques (Cap.3–5)</div>
+    <a href="#" data-page="cap03.html">Capítulo 3: Anatomia dos Ataques em Redes Móveis (Kill Chain)</a>
+    <a href="#" data-page="cap04.html">Capítulo 4: Superfície de Ataque em Redes Móveis</a>
+    <a href="#" data-page="cap05.html">Capítulo 5: Casos Reais e Incidentes em Operadoras</a>
 
-<div class="book-content-inner">
+    <div class="bloco">🟠 Protocolos (Cap.6–8)</div>
+    <a href="#" data-page="cap06.html">Capítulo 6: SS7: Arquitetura e Vulnerabilidades</a>
+    <a href="#" data-page="cap07.html">Capítulo 7: Diameter em Redes 4G (LTE) na Prática</a>
+    <a href="#" data-page="cap08.html">Capítulo 8: Segurança no 5G: Service-Based Architecture (SBA)</a>
 
-    <h1>
-        4G-5G Networks
-    </h1>
+    <div class="bloco">🛡️ Defesa (Cap.9–10)</div>
+    <a href="#" data-page="cap09.html">Capítulo 9: Arquitetura de Defesa em Redes Móveis</a>
+    <a href="#" data-page="cap10.html">Capítulo 10: Monitoramento, Detecção e Resposta a Ameaças</a>
 
-    <h2>
-        Architecture, Technologies and Troubleshooting
-    </h2>
+    <div class="bloco">⚔️ Ataque Avançado (Cap.11–12)</div>
+    <a href="#" data-page="cap11.html">Capítulo 11: Técnicas de Evasão em Redes Móveis</a>
+    <a href="#" data-page="cap12.html">Capítulo 12: Tooling e Engenharia de Ataques em Telecom</a>
 
-    <p>
-        This book explores the technologies and engineering
-        principles behind modern mobile and telecom networks,
-        moving from fundamental concepts to real-world
-        architecture, interfaces, routing, security and operations.
-    </p>
+    <div class="bloco">💼 Negócio (Cap.13)</div>
+    <a href="#" data-page="cap13.html">Capítulo 13: Impacto de Segurança no Negócio e Regulatório</a>
 
-    <div class="book-highlight">
+    <div class="bloco">🔮 Futuro (Cap.14)</div>
+    <a href="#" data-page="cap14.html">Capítulo 14: Futuro da Segurança em Redes Móveis (5G Advanced e além)</a>
 
-        <h3>
-            Inside the book
-        </h3>
+    <footer style="margin-top:30px; opacity:0.85;">
+      <p>📘 Fim do livro.</p>
+    </footer>
 
-        <ul>
-
-            <li>
-                Network Architecture, Interfaces & Routing
-            </li>
-
-            <li>
-                4G/5G Protocols & Signaling
-            </li>
-
-            <li>
-                Cloud & Infrastructure
-            </li>
-
-            <li>
-                Technologies & Security
-            </li>
-
-            <li>
-                End-to-end Network Troubleshooting
-            </li>
-
-        </ul>
-
-    </div>
-
-
-    <div class="book-note">
-
-        <p>
-            <strong>
-                From architecture to production.
-            </strong>
-        </p>
-
-    </div>
-
+  </div>
 </div>
 
-</section>
+<!-- CONTEÚDO (MEIO) -->
+<div class="content" id="content">
+  <h2>📘 Bem-vindo!</h2>
+  <p>Selecione um capítulo no índice para ler aqui.</p>
+</div>
 
-<!-- =====================================================
-     CENTER — COVER
-====================================================== -->
+<!-- CAPA (DIREITA) -->
+<div class="cover">
 
-<section class="cover">
+  <div style="text-align:center;">
+    <img src="capa.jpg" alt="Capa do livro">
+   
+    <footer style="margin-top:30px; opacity:0.85;">
+      <p>📘 Pedro Helden, 2026</p>
+    </footer>
 
-<div class="cover-inner">
-
-    <img
-        src="capa.jpg"
-        alt="Modern Network Engineering book cover"
-    >
-
-    <h3>
-        4G-5G Networks
-    </h3>
-
-    <p>
-        Architecture, Operations and Troubleshooting
-    </p>
-
-    <p class="author">
-        Pedro Helden · 2026
-    </p>
-
-    <a
-        href="https://www.linkedin.com/in/pedrohelden"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="linkedin"
-    >
-        🔗 LinkedIn
+    <a href="https://www.linkedin.com/in/pedrohelden"
+       target="_blank"
+       style="
+         display:inline-block;
+         margin-top:10px;
+         padding:10px 16px;
+         background:#0a66c2;
+         color:white;
+         border-radius:8px;
+         text-decoration:none;
+         font-weight:bold;
+         transition:0.2s ease;
+       "
+       onmouseover="this.style.transform='scale(1.05)'; this.style.opacity='0.9';"
+       onmouseout="this.style.transform='scale(1)'; this.style.opacity='1';">
+      🔗 LinkedIn
     </a>
 
+  </div>
 </div>
-
-</section>
-
-<!-- =====================================================
-     RIGHT — TABLE OF CONTENTS
-====================================================== -->
-
-<section class="toc">
-
-<div class="toc-inner">
-
-    <div class="toc-section">
-
-        <span>01</span>
-
-        <a href="#" data-page="cap01.html">
-            Mobile Networks Foundations
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>02</span>
-
-        <a href="#" data-page="cap02.html">
-            Cisco Routers and Network Troubleshooting
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>03</span>
-
-        <a href="#" data-page="cap03.html">
-            4G LTE/EPC Architecture
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>04</span>
-
-        <a href="#" data-page="cap04.html">
-            4G Signaling and Call Flows
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>05</span>
-
-        <a href="#" data-page="cap05.html">
-            4G Troubleshooting: EPC and User Plane
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>06</span>
-
-        <a href="#" data-page="cap06.html">
-            5G Core: SA and NSA Architecture
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>07</span>
-
-        <a href="#" data-page="cap07.html">
-            5G Service-Based Architecture
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>08</span>
-
-        <a href="#" data-page="cap08.html">
-            5G Core Call Flows and Troubleshooting
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>09</span>
-
-        <a href="#" data-page="cap09.html">
-            NFVI, Virtualization and Cloud-Native Networking
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>10</span>
-
-        <a href="#" data-page="cap10.html">
-            Kubernetes for 4G/5G
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>11</span>
-
-        <a href="#" data-page="cap11.html">
-            Mobile Network Security
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>12</span>
-
-        <a href="#" data-page="cap12.html">
-            Monitoring, Observability and Troubleshooting
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>13</span>
-
-        <a href="#" data-page="cap13.html">
-            Network Testing, Deployment and Migration
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>14</span>
-
-        <a href="#" data-page="cap14.html">
-            Automation, Python and Network Engineering
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>15</span>
-
-        <a href="#" data-page="cap15.html">
-            Cloud, DevOps and SRE for Telecom
-        </a>
-
-    </div>
-
-
-    <div class="toc-section">
-
-        <span>16</span>
-
-        <a href="#" data-page="cap16.html">
-            End-to-End Telecom Engineering
-        </a>
-
-    </div>
-
 </div>
-
-</section>
-
-</div>
-
-<!-- =========================================================
-     SCRIPT
-========================================================= -->
 
 <script>
+document.addEventListener("DOMContentLoaded", () => {
 
-document
-    .querySelectorAll(".toc a[data-page]")
-    .forEach(function(link) {
+  document.querySelector(".sidebar").addEventListener("click", (e) => {
+    const link = e.target.closest("a[data-page]");
+    if (!link) return;
 
-        link.addEventListener("click", function(event) {
+    e.preventDefault(); // <- ISSO AQUI É O QUE FALTAVA
 
-            event.preventDefault();
+    const page = link.getAttribute("data-page");
+    loadChapter(page);
+  });
 
-            const page =
-                this.getAttribute("data-page");
+});
 
+async function loadChapter(page) {
+  try {
+    const res = await fetch(page);
+    if (!res.ok) throw new Error("HTTP " + res.status);
 
-            document.body.innerHTML = `
+    const html = await res.text();
 
-                <div class="reader">
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
 
-                    <button
-                        class="back-button"
-                        onclick="location.reload()"
-                    >
-                        ← Back to Book
-                    </button>
+    const body = temp.querySelector("body");
+    const content = body ? body.innerHTML : temp.innerHTML;
 
-                    <iframe
-                        src="${page}"
-                        title="Book chapter"
-                    ></iframe>
+    document.getElementById("content").innerHTML = content;
 
-                </div>
-
-            `;
-
-        });
-
-    });
-
+  } catch (err) {
+    console.error(err);
+    document.getElementById("content").innerHTML =
+      "<h2>Erro ao carregar capítulo</h2><p>" + page + "</p>";
+  }
+}
 </script>
 
 </body>
-
 </html>
