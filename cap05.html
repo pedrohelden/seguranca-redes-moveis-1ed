@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 5 – Casos Reais e Incidentes em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 5 – Casos Reais e Incidentes em Redes Móveis</h1>
+
+<p>Depois de entender os ataques e a arquitetura das redes móveis, é hora de olhar para o mundo real.</p>
+
+<p>Este capítulo mostra <strong>como esses ataques realmente acontecem</strong>, com exemplos práticos e explicações claras da <strong>kill chain (cadeia de ataque)</strong> — ou seja, o passo a passo que o atacante segue.</p>
+
+<hr>
+
+<h2>5.1 O que é uma Kill Chain em redes móveis?</h2>
+
+<p>A <strong>kill chain</strong> é a sequência de etapas que um atacante executa para atingir seu objetivo.</p>
+
+<ul>
+<li>1. Descoberta do alvo</li>
+<li>2. Coleta de informações</li>
+<li>3. Exploração da rede</li>
+<li>4. Execução do ataque</li>
+<li>5. Persistência ou exploração contínua</li>
+</ul>
+
+<p>👉 Em redes móveis, muitas vezes tudo acontece em segundos.</p>
+
+<hr>
+
+<h2>5.2 Caso 1 – Rastreamento de localização (SS7)</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Descobrir a localização de um usuário.</p>
+
+<h3>🧨 Métodos usados</h3>
+<ul>
+<li>AnyTimeInterrogation</li>
+<li>SubscriberLocationReport</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Entrada</td><td>Atacante acessa rede SS7 via operadora ou parceiro</td></tr>
+<tr><td>2. Identificação</td><td>Obtém MSISDN da vítima</td></tr>
+<tr><td>3. Query</td><td>Envia AnyTimeInterrogation</td></tr>
+<tr><td>4. Resposta</td><td>Recebe localização (MSC/VLR)</td></tr>
+<tr><td>5. Monitoramento</td><td>Repete requisição para tracking contínuo</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> rastreamento em tempo real do usuário.</p>
+
+<hr>
+
+<h2>5.3 Caso 2 – Interceptação de SMS (OTP bancário)</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Interceptar SMS de autenticação.</p>
+
+<h3>🧨 Métodos</h3>
+<ul>
+<li>SendRoutingInfo</li>
+<li>UpdateLocation</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Reconhecimento</td><td>Obtém número da vítima</td></tr>
+<tr><td>2. Manipulação</td><td>Envia UpdateLocation falso</td></tr>
+<tr><td>3. Registro</td><td>Rede acredita que usuário está em outra MSC</td></tr>
+<tr><td>4. Interceptação</td><td>SMS é redirecionado</td></tr>
+<tr><td>5. Exploração</td><td>Uso de OTP para fraude</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> acesso a contas bancárias.</p>
+
+<hr>
+
+<h2>5.4 Caso 3 – Vazamento de IMSI</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Descobrir identidade do assinante na rede.</p>
+
+<h3>🧨 Métodos</h3>
+<ul>
+<li>SendIMSI</li>
+<li>SendIdentification</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Entrada</td><td>Acesso à rede SS7</td></tr>
+<tr><td>2. Query</td><td>Envio de SendIMSI</td></tr>
+<tr><td>3. Resposta</td><td>Recebe IMSI da vítima</td></tr>
+<tr><td>4. Correlação</td><td>Relaciona IMSI com serviços</td></tr>
+<tr><td>5. Uso</td><td>Outros ataques mais avançados</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> quebra de anonimato e base para ataques futuros.</p>
+
+<hr>
+
+<h2>5.5 Caso 4 – Fraude de chamadas</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Gerar chamadas fraudulentas.</p>
+
+<h3>🧨 Métodos</h3>
+<ul>
+<li>CAMEL InitiateCallAttempt</li>
+<li>ActivateSS</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Acesso</td><td>Entrada na rede</td></tr>
+<tr><td>2. Execução</td><td>Força chamadas via CAMEL</td></tr>
+<tr><td>3. Billing</td><td>Custo é atribuído à vítima</td></tr>
+<tr><td>4. Escala</td><td>Repete para múltiplos usuários</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> prejuízo financeiro para operadora e cliente.</p>
+
+<hr>
+
+<h2>5.6 Caso 5 – Diameter Storm (4G)</h2>
+
+<h3>⚠️ O que é?</h3>
+
+<p><strong>Diameter Storm</strong> é um tipo de ataque ou falha em que há um <strong>volume massivo de mensagens Diameter</strong> circulando na rede, causando congestionamento severo.</p>
+
+<p>Não é apenas um ataque — pode ser causado também por erro de configuração.</p>
+
+<h3>🎯 Objetivo / efeito</h3>
+
+<ul>
+<li>Derrubar elementos do core (MME, HSS)</li>
+<li>Causar lentidão generalizada</li>
+<li>Impedir autenticação de usuários</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Gatilho</td><td>Falha ou ataque inicia volume alto de requests</td></tr>
+<tr><td>2. Amplificação</td><td>Retries automáticos aumentam tráfego</td></tr>
+<tr><td>3. Saturação</td><td>HSS/MME ficam sobrecarregados</td></tr>
+<tr><td>4. Colapso</td><td>Usuários não conseguem se registrar</td></tr>
+<tr><td>5. Efeito cascata</td><td>Outros elementos começam a falhar</td></tr>
+</table>
+
+<h3>🧠 Por que isso acontece?</h3>
+
+<ul>
+<li>Protocolos fazem retry automático</li>
+<li>Dependência forte entre elementos</li>
+<li>Falta de rate limiting</li>
+</ul>
+
+<p><strong>Impacto:</strong> queda massiva da rede 4G.</p>
+
+<hr>
+
+<h2>5.7 Caso 6 – API Abuse no 5G</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Explorar APIs da arquitetura SBA.</p>
+
+<h3>🧨 Métodos</h3>
+<ul>
+<li>Chamadas HTTP/2 maliciosas</li>
+<li>Token abuse</li>
+</ul>
+
+<h3>🔗 Kill Chain</h3>
+
+<table>
+<tr><th>Etapa</th><th>Descrição</th></tr>
+<tr><td>1. Descoberta</td><td>Enumeração de APIs</td></tr>
+<tr><td>2. Acesso</td><td>Uso de credenciais válidas ou falhas</td></tr>
+<tr><td>3. Exploração</td><td>Chamadas abusivas</td></tr>
+<tr><td>4. Impacto</td><td>Exposição de dados ou DoS</td></tr>
+</table>
+
+<p><strong>Impacto:</strong> vazamento de dados e instabilidade.</p>
+
+<hr>
+
+<h2>5.8 Comparação dos incidentes</h2>
+
+<table>
+<tr>
+<th>Tipo</th>
+<th>Tecnologia</th>
+<th>Impacto</th>
+</tr>
+<tr>
+<td>Tracking</td>
+<td>SS7</td>
+<td>Privacidade</td>
+</tr>
+<tr>
+<td>Interceptação</td>
+<td>SS7</td>
+<td>Segurança financeira</td>
+</tr>
+<tr>
+<td>Fraude</td>
+<td>SS7</td>
+<td>Financeiro</td>
+</tr>
+<tr>
+<td>Storm</td>
+<td>4G</td>
+<td>Disponibilidade</td>
+</tr>
+<tr>
+<td>API Abuse</td>
+<td>5G</td>
+<td>Dados + Disponibilidade</td>
+</tr>
+</table>
+
+<hr>
+
+<h2>5.9 Conclusão</h2>
+
+<p>Os ataques em redes móveis não são teóricos — eles já aconteceram e continuam acontecendo.</p>
+
+<ul>
+<li>SS7 → ataques diretos e silenciosos</li>
+<li>4G → falhas de escala e sinalização</li>
+<li>5G → riscos de API e exposição</li>
+</ul>
+
+<p><strong>A diferença entre um incidente e uma rede segura está na capacidade de detectar e reagir rapidamente.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 5 – Casos Reais e Incidentes</p>
+</footer>
+
+</body>
+</html>

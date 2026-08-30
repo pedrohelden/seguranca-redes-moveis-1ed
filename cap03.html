@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 3 – Kill Chain em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul, ol {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 3 – Como os ataques realmente acontecem (Kill Chain Telecom)</h1>
+
+<p>Nos capítulos anteriores, você aprendeu como as redes móveis funcionam e quais são os principais ataques. Agora vamos dar um passo além: entender <strong>como esses ataques são combinados na prática</strong>.</p>
+
+<p>Na vida real, atacantes não usam apenas um método isolado. Eles seguem uma sequência lógica, explorando vulnerabilidades em cadeia. Essa sequência é chamada de <strong>Kill Chain</strong>.</p>
+
+---
+
+<h2>3.1 O que é uma Kill Chain?</h2>
+
+<p>Uma kill chain representa as etapas de um ataque, desde o reconhecimento até o impacto final.</p>
+
+<table>
+<tr><th>Etapa</th><th>Objetivo</th></tr>
+<tr><td>Reconhecimento</td><td>Identificar o alvo (ex: número de telefone)</td></tr>
+<tr><td>Enumeração</td><td>Coletar dados (IMSI, localização)</td></tr>
+<tr><td>Exploração</td><td>Manipular a rede</td></tr>
+<tr><td>Impacto</td><td>Interceptação, fraude ou DoS</td></tr>
+</table>
+
+<p>👉 O ponto mais importante: <strong>cada etapa prepara a próxima</strong>.</p>
+
+---
+
+<h2>3.2 Anatomia de um ataque real (Interceptação de SMS)</h2>
+
+<h3>🎯 Objetivo: capturar código de autenticação (OTP)</h3>
+
+<h3>Etapa 1 – Reconhecimento</h3>
+
+<p>O atacante começa com um dado simples:</p>
+
+<ul>
+<li><code>MSISDN (número de telefone)</code></li>
+</ul>
+
+<p>Esse dado pode ser obtido facilmente (cadastros, vazamentos, etc).</p>
+
+---
+
+<h3>Etapa 2 – Obtenção do IMSI</h3>
+
+<p>Protocolos permitem consultar a identidade real do assinante:</p>
+
+<ul>
+<li><code>SendIMSI</code></li>
+<li><code>SendIdentification</code></li>
+</ul>
+
+<p><strong>Resultado:</strong></p>
+<ul>
+<li>IMSI revelado</li>
+<li>Identidade única do SIM conhecida</li>
+</ul>
+
+<p>👉 O IMSI é mais sensível que o número — ele identifica o usuário dentro da rede.</p>
+
+---
+
+<h3>Etapa 3 – Descoberta de localização</h3>
+
+<p>Agora o atacante precisa saber onde o usuário está na rede:</p>
+
+<ul>
+<li><code>AnyTimeInterrogation</code></li>
+<li><code>ProvideSubscriberInfo</code></li>
+</ul>
+
+<p><strong>Resultado:</strong></p>
+<ul>
+<li>MSC/VLR atual</li>
+<li>Região aproximada</li>
+</ul>
+
+<p>👉 Isso permite direcionar o ataque corretamente.</p>
+
+---
+
+<h3>Etapa 4 – Manipulação de roteamento</h3>
+
+<p>Aqui acontece o ataque principal:</p>
+
+<ul>
+<li><code>SendRoutingInfo</code></li>
+<li><code>ProvideRoamingNumber</code></li>
+</ul>
+
+<p><strong>Resultado:</strong></p>
+<ul>
+<li>Chamadas/SMS redirecionados</li>
+<li>Tráfego passa por entidade controlada pelo atacante</li>
+</ul>
+
+---
+
+<h3>Etapa 5 – Interceptação</h3>
+
+<p>Com o roteamento manipulado:</p>
+
+<ul>
+<li>SMS de banco são capturados</li>
+<li>Códigos OTP são roubados</li>
+<li>Contas podem ser comprometidas</li>
+</ul>
+
+<p><strong>💥 Impacto final:</strong> quebra de autenticação de dois fatores.</p>
+
+---
+
+<h2>3.3 Fluxo técnico simplificado</h2>
+
+<p>Visualização da sequência:</p>
+
+<p>
+MSISDN → IMSI → Localização → Roteamento → Interceptação
+</p>
+
+<p>👉 Cada etapa depende da anterior. Sem IMSI, não há localização. Sem localização, não há redirecionamento.</p>
+
+---
+
+<h2>3.4 Outro cenário: fraude</h2>
+
+<h3>🎯 Objetivo: gerar custo indevido</h3>
+
+<ol>
+<li>Uso de <code>CAMEL InitiateCallAttempt</code></li>
+<li>Ativação de serviços via <code>ActivateSS</code></li>
+<li>Manipulação de lógica de cobrança</li>
+</ol>
+
+<p><strong>Resultado:</strong></p>
+<ul>
+<li>Chamadas indevidas</li>
+<li>Impacto financeiro na operadora</li>
+</ul>
+
+---
+
+<h2>3.5 Ataques em 4G (Diameter)</h2>
+
+<p>Mesmo com evolução, a lógica da kill chain continua:</p>
+
+<table>
+<tr><th>Etapa</th><th>Exemplo</th></tr>
+<tr><td>Enumeração</td><td>Authentication Info Request (AIR)</td></tr>
+<tr><td>Manipulação</td><td>Update Location falso</td></tr>
+<tr><td>Impacto</td><td>Interceptação de sessão</td></tr>
+</table>
+
+<p>👉 O protocolo muda, mas o ataque é o mesmo.</p>
+
+---
+
+<h2>3.6 Ataques em 5G (SBA / APIs)</h2>
+
+<p>No 5G, os ataques exploram APIs:</p>
+
+<ol>
+<li>Acesso indevido a API</li>
+<li>Consulta ao banco de dados do assinante</li>
+<li>Manipulação de sessão</li>
+</ol>
+
+<p><strong>Impacto:</strong></p>
+<ul>
+<li>Vazamento de dados</li>
+<li>Controle de sessões</li>
+</ul>
+
+---
+
+<h2>3.7 Padrão universal dos ataques</h2>
+
+<table>
+<tr><th>Fase</th><th>Objetivo</th></tr>
+<tr><td>Identidade</td><td>Descobrir IMSI</td></tr>
+<tr><td>Localização</td><td>Descobrir onde o usuário está</td></tr>
+<tr><td>Controle</td><td>Manipular roteamento</td></tr>
+<tr><td>Exploração</td><td>Interceptar ou fraudar</td></tr>
+</table>
+
+<p><strong>👉 Esse padrão se repete em 2G, 3G, 4G e 5G.</strong></p>
+
+---
+
+<h2>3.8 Onde a operadora pode bloquear</h2>
+
+<h3>🔴 Entrada da rede</h3>
+<ul>
+<li>Firewall de sinalização</li>
+<li>Bloqueio de mensagens externas</li>
+</ul>
+
+<h3>🟠 Validação lógica</h3>
+<ul>
+<li>Consistência entre IMSI e origem</li>
+<li>Validação de roteamento</li>
+</ul>
+
+<h3>🟡 Monitoramento</h3>
+<ul>
+<li>Detecção de padrões de ataque</li>
+<li>Análise de comportamento</li>
+</ul>
+
+---
+
+<h2>3.9 Explicação didática</h2>
+
+<p>Imagine que a rede é um prédio:</p>
+
+<ul>
+<li><strong>SS7:</strong> qualquer pessoa entra</li>
+<li><strong>4G:</strong> só conhecidos entram</li>
+<li><strong>5G:</strong> sistema moderno com portas digitais</li>
+</ul>
+
+<p>O atacante:</p>
+
+<ol>
+<li>entra</li>
+<li>observa</li>
+<li>descobre quem você é</li>
+<li>controla o sistema</li>
+</ol>
+
+---
+
+<h2>3.10 Insight mais importante</h2>
+
+<p><strong>O risco real não está em um ataque isolado.</strong></p>
+
+<p><strong>Está na combinação deles.</strong></p>
+
+<p>👉 Segurança eficaz precisa bloquear a cadeia completa, não apenas eventos individuais.</p>
+
+---
+
+<h2>3.11 Conclusão</h2>
+
+<p>As redes móveis são sistemas complexos, mas os ataques seguem uma lógica simples:</p>
+
+<ul>
+<li>Descobrir</li>
+<li>Localizar</li>
+<li>Controlar</li>
+<li>Explorar</li>
+</ul>
+
+<p>Compreender essa sequência é essencial para defender a rede de forma eficiente.</p>
+
+<footer>
+<p>Fim do Capítulo 3 – Kill Chain em Redes Móveis</p>
+</footer>
+
+</body>
+</html>

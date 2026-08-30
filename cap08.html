@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 8 – Defesa Prática e Arquitetura de Segurança em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 8 – Defesa Prática e Arquitetura de Segurança em Redes Móveis</h1>
+
+<p>Depois de entender como os ataques funcionam na prática, surge a pergunta mais importante:</p>
+
+<p><strong>Como defender uma rede móvel real?</strong></p>
+
+<p>Este capítulo traz uma visão prática, focada em implementação, operação e defesa contínua — como um time de segurança (SOC/NOC) realmente atua.</p>
+
+---
+
+<h2>8.1 O princípio fundamental da defesa</h2>
+
+<p>O modelo moderno de segurança em redes móveis é baseado em um conceito simples:</p>
+
+<p><strong>Zero Trust: nunca confiar, sempre verificar.</strong></p>
+
+<ul>
+<li>Não confiar em redes externas</li>
+<li>Não confiar em parceiros automaticamente</li>
+<li>Validar cada mensagem e cada requisição</li>
+</ul>
+
+<p>👉 Isso é o oposto do modelo original do SS7.</p>
+
+---
+
+<h2>8.2 Arquitetura de defesa em camadas</h2>
+
+<p>A proteção eficaz acontece em múltiplas camadas:</p>
+
+<table>
+<tr>
+<th>Camada</th>
+<th>Proteção</th>
+</tr>
+<tr>
+<td>Borda (Interconnect)</td>
+<td>Firewall SS7 / Diameter</td>
+</tr>
+<tr>
+<td>Core Network</td>
+<td>Validação de mensagens</td>
+</tr>
+<tr>
+<td>Aplicação (5G)</td>
+<td>API Security (OAuth, TLS)</td>
+</tr>
+<tr>
+<td>Monitoramento</td>
+<td>Detecção e resposta</td>
+</tr>
+</table>
+
+<p>👉 Se uma camada falha, outra ainda protege.</p>
+
+---
+
+<h2>8.3 Firewall de sinalização (SS7 / Diameter)</h2>
+
+<p>É o principal mecanismo de defesa.</p>
+
+<h3>Funções principais:</h3>
+
+<ul>
+<li>Filtrar mensagens por tipo (MAP, CAP, Diameter)</li>
+<li>Validar origem (GT, realm, IP)</li>
+<li>Bloquear mensagens ilegítimas</li>
+<li>Aplicar políticas por parceiro</li>
+</ul>
+
+<h3>Exemplo prático:</h3>
+
+<ul>
+<li>Bloquear <code>AnyTimeInterrogation</code> vindo de redes externas</li>
+<li>Permitir <code>SendRoutingInfo</code> apenas para parceiros confiáveis</li>
+</ul>
+
+---
+
+<h2>8.4 Proteção específica por tipo de ataque</h2>
+
+<h3>📍 Tracking (localização)</h3>
+
+<ul>
+<li>Bloquear ATI externo</li>
+<li>Validar contexto de roaming</li>
+<li>Permitir apenas GMLC autorizado</li>
+</ul>
+
+<h3>📡 Interceptação</h3>
+
+<ul>
+<li>Validar <code>SendRoutingInfo</code></li>
+<li>Verificar coerência IMSI vs origem</li>
+<li>Bloquear redirecionamento suspeito</li>
+</ul>
+
+<h3>🔓 Vazamento de dados</h3>
+
+<ul>
+<li>Bloquear <code>SendIMSI</code></li>
+<li>Filtrar <code>SendIdentification</code></li>
+<li>Restringir queries ao HLR/HSS</li>
+</ul>
+
+<h3>💸 Fraude</h3>
+
+<ul>
+<li>Controlar CAP (CAMEL)</li>
+<li>Validar requests de charging</li>
+<li>Monitorar padrões anormais</li>
+</ul>
+
+<h3>⚙️ DoS</h3>
+
+<ul>
+<li>Rate limiting</li>
+<li>Detecção de floods</li>
+<li>Blacklisting automático</li>
+</ul>
+
+---
+
+<h2>8.5 Segurança no 4G (Diameter)</h2>
+
+<p>O Diameter trouxe melhorias, mas ainda depende de confiança.</p>
+
+<h3>Principais riscos:</h3>
+
+<ul>
+<li>Diameter Storm</li>
+<li>Fraude via CCR</li>
+<li>Vazamento via AIR/ULR</li>
+</ul>
+
+<h3>Controles:</h3>
+
+<ul>
+<li>Diameter Edge Agent (DEA)</li>
+<li>Rate limiting por peer</li>
+<li>Validação de sessão</li>
+</ul>
+
+---
+
+<h2>8.6 Segurança no 5G (SBA)</h2>
+
+<p>No 5G, a segurança muda completamente:</p>
+
+<ul>
+<li>Baseado em APIs (HTTP/2)</li>
+<li>Comunicação entre serviços (SBA)</li>
+</ul>
+
+<h3>Riscos:</h3>
+
+<ul>
+<li>Exposição de APIs</li>
+<li>Falta de autenticação forte</li>
+<li>Ataques de API abuse</li>
+</ul>
+
+<h3>Proteções:</h3>
+
+<ul>
+<li>OAuth2</li>
+<li>mTLS (mutual TLS)</li>
+<li>API Gateway</li>
+<li>Service mesh</li>
+</ul>
+
+---
+
+<h2>8.7 Monitoramento e detecção (SOC/NOC)</h2>
+
+<p>Defesa não é só bloquear — é observar.</p>
+
+<h3>Indicadores de ataque:</h3>
+
+<table>
+<tr>
+<th>Sintoma</th>
+<th>Possível ataque</th>
+</tr>
+<tr>
+<td>Muitos ATI requests</td>
+<td>Tracking</td>
+</tr>
+<tr>
+<td>Alterações de routing</td>
+<td>Interceptação</td>
+</tr>
+<tr>
+<td>Picos de signaling</td>
+<td>DoS / Storm</td>
+</tr>
+<tr>
+<td>Requests incomuns</td>
+<td>Reconhecimento</td>
+</tr>
+</table>
+
+---
+
+<h2>8.8 Playbook de resposta</h2>
+
+<p>Quando um ataque acontece:</p>
+
+<ol>
+<li>Detectar (alerta)</li>
+<li>Classificar (tipo de ataque)</li>
+<li>Bloquear origem</li>
+<li>Aplicar regra no firewall</li>
+<li>Monitorar impacto</li>
+</ol>
+
+<p>👉 Tempo de resposta é crítico.</p>
+
+---
+
+<h2>8.9 Maturidade de segurança</h2>
+
+<table>
+<tr>
+<th>Nível</th>
+<th>Descrição</th>
+</tr>
+<tr>
+<td>Básico</td>
+<td>Regras estáticas</td>
+</tr>
+<tr>
+<td>Intermediário</td>
+<td>Monitoramento ativo</td>
+</tr>
+<tr>
+<td>Avançado</td>
+<td>Automação + análise</td>
+</tr>
+<tr>
+<td>Elite</td>
+<td>Detecção em tempo real + IA</td>
+</tr>
+</table>
+
+---
+
+<h2>8.10 Explicação didática</h2>
+
+<p>Imagina a rede como um prédio:</p>
+
+<ul>
+<li>SS7 → porta aberta</li>
+<li>4G → porteiro distraído</li>
+<li>5G → sistema digital com senha</li>
+</ul>
+
+<p>Mas segurança real é:</p>
+
+<ul>
+<li>Câmeras</li>
+<li>Controle de acesso</li>
+<li>Monitoramento constante</li>
+</ul>
+
+<p>👉 Não basta ter porta — tem que vigiar.</p>
+
+---
+
+<h2>8.11 Conclusão</h2>
+
+<p>Defender redes móveis exige:</p>
+
+<ul>
+<li>Arquitetura segura</li>
+<li>Controle rigoroso de sinalização</li>
+<li>Monitoramento contínuo</li>
+<li>Resposta rápida</li>
+</ul>
+
+<p><strong>A ameaça evolui — a defesa precisa evoluir mais rápido.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 8 – Defesa Prática e Arquitetura de Segurança</p>
+</footer>
+
+</body>
+</html>

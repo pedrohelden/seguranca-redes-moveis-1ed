@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 6 – SS7 em Profundidade</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  code {
+    background: #2d3b4e;
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: #a5d6ff;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 6 – SS7 em Profundidade</h1>
+
+<p>Agora que você já entende como os ataques funcionam, vamos abrir a “caixa preta” do SS7.</p>
+
+<p>Este capítulo mostra como o protocolo funciona por dentro, por que ele é vulnerável e como os ataques realmente acontecem no nível de sinalização.</p>
+
+<hr>
+
+<h2>6.1 O que é o SS7 de verdade?</h2>
+
+<p>O <strong>SS7 (Signaling System No. 7)</strong> é o sistema responsável por controlar a rede móvel — ele não transporta voz ou dados diretamente, mas sim os comandos que fazem tudo acontecer.</p>
+
+<p>Exemplos do que o SS7 faz:</p>
+
+<ul>
+<li>Localizar usuários</li>
+<li>Encaminhar chamadas</li>
+<li>Entregar SMS</li>
+<li>Gerenciar roaming</li>
+</ul>
+
+<p><strong>Analogia:</strong></p>
+
+<ul>
+<li>Dados (voz/internet) = carros</li>
+<li>SS7 = sistema de trânsito que decide para onde eles vão</li>
+</ul>
+
+<hr>
+
+<h2>6.2 Arquitetura do SS7</h2>
+
+<table>
+<tr>
+<th>Elemento</th>
+<th>Função</th>
+</tr>
+<tr>
+<td>MSC</td>
+<td>Central de comutação (chamadas)</td>
+</tr>
+<tr>
+<td>HLR</td>
+<td>Banco de dados do assinante</td>
+</tr>
+<tr>
+<td>VLR</td>
+<td>Registro temporário do usuário</td>
+</tr>
+<tr>
+<td>STP</td>
+<td>Roteador de sinalização</td>
+</tr>
+<tr>
+<td>GMSC</td>
+<td>Gateway para outras redes</td>
+</tr>
+</table>
+
+<p>👉 O STP é o “roteador” do SS7 — ele decide para onde cada mensagem vai.</p>
+
+<hr>
+
+<h2>6.3 Stack de protocolos</h2>
+
+<table>
+<tr><th>Camada</th><th>Protocolo</th><th>Função</th></tr>
+<tr><td>Aplicação</td><td>MAP</td><td>Operações (localização, SMS)</td></tr>
+<tr><td>Transação</td><td>TCAP</td><td>Controle de sessão</td></tr>
+<tr><td>Rede</td><td>SCCP</td><td>Endereçamento</td></tr>
+<tr><td>Transporte</td><td>MTP</td><td>Entrega confiável</td></tr>
+</table>
+
+<p><strong>Resumo simples:</strong></p>
+<ul>
+<li>MAP = o que fazer</li>
+<li>TCAP = como conversar</li>
+<li>SCCP = para onde enviar</li>
+</ul>
+
+<hr>
+
+<h2>6.4 Fluxo real – entrega de SMS</h2>
+
+<table>
+<tr><th>Passo</th><th>Ação</th></tr>
+<tr><td>1</td><td>SMS chega no SMSC</td></tr>
+<tr><td>2</td><td>SMSC envia SendRoutingInfo</td></tr>
+<tr><td>3</td><td>HLR responde com MSC do usuário</td></tr>
+<tr><td>4</td><td>SMS é encaminhado</td></tr>
+</table>
+
+<p>👉 Esse fluxo simples é exatamente o que o atacante explora.</p>
+
+<hr>
+
+<h2>6.5 O grande problema: modelo de confiança</h2>
+
+<p>O SS7 foi criado com uma premissa:</p>
+
+<p><strong>“Se está conectado na rede, é confiável.”</strong></p>
+
+<p>Hoje isso é falso.</p>
+
+<ul>
+<li>Operadoras terceiras</li>
+<li>Interconexões globais</li>
+<li>Acesso indevido</li>
+</ul>
+
+<p>👉 Resultado: qualquer rede conectada pode enviar comandos perigosos.</p>
+
+<hr>
+
+<h2>6.6 Exemplo técnico de mensagem (simplificado)</h2>
+
+<pre>
+MAP: SendRoutingInfo
+IMSI: 724XXXXXXXXXXXX
+MSISDN: +5511999999999
+</pre>
+
+<p>👉 Esse tipo de mensagem pode revelar localização ou rota de chamadas.</p>
+
+<hr>
+
+<h2>6.7 Ataque detalhado – interceptação de SMS</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Roubar SMS (ex: código bancário)</p>
+
+<h3>🔗 Fluxo técnico</h3>
+
+<table>
+<tr><th>Etapa</th><th>Mensagem</th><th>Descrição</th></tr>
+<tr><td>1</td><td>UpdateLocation</td><td>Atacante registra falsa localização</td></tr>
+<tr><td>2</td><td>CancelLocation</td><td>Remove registro original</td></tr>
+<tr><td>3</td><td>InsertSubscriberData</td><td>Atualiza dados no VLR falso</td></tr>
+<tr><td>4</td><td>ForwardSM</td><td>SMS enviado para atacante</td></tr>
+</table>
+
+<p><strong>Resultado:</strong> vítima continua usando o celular normalmente, mas SMS é desviado.</p>
+
+<hr>
+
+<h2>6.8 Ataque detalhado – rastreamento</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Descobrir localização do usuário</p>
+
+<h3>🔗 Fluxo</h3>
+
+<table>
+<tr><th>Etapa</th><th>Mensagem</th><th>Descrição</th></tr>
+<tr><td>1</td><td>AnyTimeInterrogation</td><td>Consulta localização</td></tr>
+<tr><td>2</td><td>ProvideSubscriberInfo</td><td>HLR responde com dados</td></tr>
+</table>
+
+<p><strong>Resultado:</strong> localização precisa (às vezes nível de célula).</p>
+
+<hr>
+
+<h2>6.9 Ataque detalhado – descoberta de IMSI</h2>
+
+<h3>🎯 Objetivo</h3>
+<p>Descobrir identidade interna do SIM</p>
+
+<h3>🔗 Fluxo</h3>
+
+<table>
+<tr><th>Etapa</th><th>Mensagem</th><th>Descrição</th></tr>
+<tr><td>1</td><td>SendIMSI</td><td>Solicita IMSI</td></tr>
+<tr><td>2</td><td>Resposta</td><td>HLR retorna IMSI</td></tr>
+</table>
+
+<p><strong>Resultado:</strong> base para outros ataques.</p>
+
+<hr>
+
+<h2>6.10 Como operadoras se defendem</h2>
+
+<table>
+<tr><th>Controle</th><th>Descrição</th></tr>
+<tr><td>Firewall SS7</td><td>Filtra mensagens suspeitas</td></tr>
+<tr><td>Whitelist</td><td>Permite apenas redes confiáveis</td></tr>
+<tr><td>Validação de origem</td><td>Confere se origem é legítima</td></tr>
+<tr><td>Bloqueio de MAP sensível</td><td>Bloqueia comandos perigosos</td></tr>
+</table>
+
+<p><strong>Regra principal:</strong></p>
+<p>❌ Não confiar na rede externa<br>
+✅ Permitir apenas o necessário</p>
+
+<hr>
+
+<h2>6.11 Impacto no negócio</h2>
+
+<ul>
+<li>Fraude financeira</li>
+<li>Roubo de contas bancárias</li>
+<li>Violação de privacidade</li>
+<li>Danos à reputação</li>
+</ul>
+
+<p>👉 Um único ataque pode afetar milhares de usuários.</p>
+
+<hr>
+
+<h2>6.12 Conclusão</h2>
+
+<p>O SS7 continua sendo uma das maiores superfícies de ataque das redes móveis.</p>
+
+<ul>
+<li>Arquitetura poderosa</li>
+<li>Modelo de confiança ultrapassado</li>
+<li>Alta exposição global</li>
+</ul>
+
+<p><strong>Entender o SS7 é entender a base dos ataques modernos em telecom.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 6 – SS7 em Profundidade</p>
+</footer>
+
+</body>
+</html>

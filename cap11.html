@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Capítulo 11 – Evasão de Segurança em Redes Móveis</title>
+<style>
+  body {
+    background-color: #1e2a38;
+    color: #cbd5e1;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px;
+    line-height: 1.7;
+  }
+  h1, h2, h3 {
+    color: #60a5fa;
+    margin-bottom: 0.7em;
+  }
+  p, li {
+    max-width: 900px;
+  }
+  p {
+    margin-bottom: 1.4em;
+    font-size: 1.1em;
+  }
+  ul {
+    max-width: 900px;
+    padding-left: 25px;
+    margin-bottom: 2em;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 900px;
+    margin: 1.5em 0 3em 0;
+    background: #293845;
+  }
+  th, td {
+    padding: 12px;
+    border: 1px solid #3e4f65;
+  }
+  th {
+    background-color: #3b82f6;
+    color: #fff;
+  }
+  pre {
+    background: #2d3b4e;
+    padding: 12px;
+    border-radius: 6px;
+    color: #a5d6ff;
+    overflow-x: auto;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>Capítulo 11 – Evasão de Segurança (Bypass de Firewalls)</h1>
+
+<p>Até agora, você viu como redes são protegidas. Mas existe uma realidade importante:</p>
+
+<p><strong>👉 Firewalls não são perfeitos.</strong></p>
+
+<p>Atacantes experientes não tentam quebrar a rede diretamente — eles <strong>contornam as proteções</strong>.</p>
+
+<p>Este capítulo mostra exatamente como isso acontece.</p>
+
+<hr>
+
+<h2>11.1 O problema fundamental</h2>
+
+<p>Firewalls em telecom (SS7, Diameter, 5G) funcionam baseados em:</p>
+
+<ul>
+<li>Regras (permitir / bloquear)</li>
+<li>Listas de confiança</li>
+<li>Validação de mensagens</li>
+</ul>
+
+<p>👉 O problema:</p>
+
+<p><strong>Se algo parece legítimo, geralmente é permitido.</strong></p>
+
+<p>E é exatamente isso que o atacante explora.</p>
+
+<hr>
+
+<h2>11.2 Principais técnicas de evasão</h2>
+
+<h3>1. Uso de redes confiáveis (Trust Abuse)</h3>
+
+<p>O atacante envia tráfego através de uma operadora considerada confiável.</p>
+
+<p>Fluxo:</p>
+
+<pre>
+Atacante → Operadora intermediária confiável → Rede alvo
+</pre>
+
+<p>👉 O firewall aceita porque confia na origem.</p>
+
+<p><strong>Impacto:</strong></p>
+
+<ul>
+<li>Bypass de filtering por origem</li>
+<li>Ataques parecem legítimos</li>
+</ul>
+
+<hr>
+
+<h3>2. Manipulação de identidade (Spoofing)</h3>
+
+<p>Alteração de parâmetros como:</p>
+
+<ul>
+<li>MSISDN</li>
+<li>IMSI</li>
+<li>Global Title</li>
+</ul>
+
+<p>👉 Objetivo: parecer um elemento legítimo da rede.</p>
+
+<p><strong>Exemplo:</strong></p>
+
+<pre>
+Origem real: rede externa
+Identidade apresentada: rede interna
+</pre>
+
+<hr>
+
+<h3>3. Abuso de mensagens legítimas</h3>
+
+<p>Em vez de usar mensagens “maliciosas”, o atacante usa mensagens válidas de forma indevida.</p>
+
+<table>
+<tr><th>Mensagem</th><th>Uso legítimo</th><th>Uso malicioso</th></tr>
+<tr><td>ATI</td><td>Localização</td><td>Tracking</td></tr>
+<tr><td>SRI</td><td>Roteamento</td><td>Interceptação</td></tr>
+<tr><td>ULR</td><td>Registro</td><td>Flood / DoS</td></tr>
+</table>
+
+<p>👉 Isso dificulta muito a detecção.</p>
+
+<hr>
+
+<h3>4. Ataques “Low & Slow”</h3>
+
+<p>Ao invés de alto volume, o atacante usa baixa frequência:</p>
+
+<ul>
+<li>Uma requisição por minuto</li>
+<li>Diferentes alvos</li>
+<li>Padrão distribuído</li>
+</ul>
+
+<p>👉 Resultado:</p>
+
+<p><strong>Passa despercebido por sistemas baseados em volume.</strong></p>
+
+<hr>
+
+<h3>5. Fragmentação de ataque</h3>
+
+<p>O ataque é dividido em múltiplas partes:</p>
+
+<pre>
+Passo 1: obter IMSI
+Passo 2: obter localização
+Passo 3: interceptar comunicação
+</pre>
+
+<p>Cada etapa isolada parece inofensiva.</p>
+
+<p>👉 Juntas, formam um ataque completo.</p>
+
+<hr>
+
+<h3>6. Rotação de origem</h3>
+
+<p>O atacante muda constantemente:</p>
+
+<ul>
+<li>IP</li>
+<li>Operadora de origem</li>
+<li>Identidade de rede</li>
+</ul>
+
+<p>👉 Isso quebra mecanismos de blacklist.</p>
+
+<hr>
+
+<h2>11.3 Evasão em SS7</h2>
+
+<table>
+<tr><th>Técnica</th><th>Descrição</th></tr>
+<tr><td>GT Spoofing</td><td>Falsificação de endereço de signaling</td></tr>
+<tr><td>Routing indireto</td><td>Uso de STPs intermediários</td></tr>
+<tr><td>ATI disfarçado</td><td>Parecer consulta legítima</td></tr>
+</table>
+
+<p>👉 Mesmo com firewall, ataques podem passar.</p>
+
+<hr>
+
+<h2>11.4 Evasão em Diameter (4G)</h2>
+
+<table>
+<tr><th>Técnica</th><th>Descrição</th></tr>
+<tr><td>Session reuse</td><td>Uso de sessões válidas</td></tr>
+<tr><td>CCR manipulation</td><td>Alteração de charging</td></tr>
+<tr><td>Flood control bypass</td><td>Distribuição de carga</td></tr>
+</table>
+
+<p>👉 Ataques se misturam com tráfego legítimo.</p>
+
+<hr>
+
+<h2>11.5 Evasão em 5G (SBA)</h2>
+
+<p>No 5G, o foco é APIs.</p>
+
+<table>
+<tr><th>Técnica</th><th>Descrição</th></tr>
+<tr><td>Token abuse</td><td>Uso indevido de tokens válidos</td></tr>
+<tr><td>API chaining</td><td>Combinação de múltiplas APIs</td></tr>
+<tr><td>Rate-limit bypass</td><td>Distribuição de requisições</td></tr>
+</table>
+
+<p>👉 O ataque se parece com uso normal do sistema.</p>
+
+<hr>
+
+<h2>11.6 Exemplo completo de bypass</h2>
+
+<h3>Cenário: interceptação de SMS</h3>
+
+<pre>
+1. Obter IMSI (SendIMSI)
+2. Enviar SRI via rede confiável
+3. Redirecionar SMS
+4. Manter baixa frequência
+</pre>
+
+<p><strong>Por que funciona?</strong></p>
+
+<ul>
+<li>Origem confiável</li>
+<li>Mensagens legítimas</li>
+<li>Sem volume suspeito</li>
+</ul>
+
+<p><strong>Resultado:</strong></p>
+
+<p>👉 Interceptação sem detecção imediata</p>
+
+<hr>
+
+<h2>11.7 Por que firewalls falham?</h2>
+
+<ul>
+<li>Confiança excessiva em parceiros</li>
+<li>Foco em regras estáticas</li>
+<li>Falta de correlação entre eventos</li>
+<li>Visão limitada (apenas uma camada)</li>
+</ul>
+
+<p>👉 Segurança baseada só em bloqueio não é suficiente.</p>
+
+<hr>
+
+<h2>11.8 Como se defender de evasão</h2>
+
+<p>Defesa contra evasão exige maturidade maior:</p>
+
+<ul>
+<li>Correlação de eventos (multi-step attacks)</li>
+<li>Análise comportamental</li>
+<li>Validação forte de origem</li>
+<li>Zero Trust (não confiar em ninguém)</li>
+<li>Monitoramento contínuo</li>
+</ul>
+
+<p><strong>👉 A regra muda:</strong></p>
+
+<p><strong>“Não basta bloquear o ataque — é preciso entender o comportamento.”</strong></p>
+
+<hr>
+
+<h2>11.9 Conclusão</h2>
+
+<p>Atacantes evoluem constantemente. Evasão é prova disso.</p>
+
+<ul>
+<li>Firewalls são necessários</li>
+<li>Mas não são suficientes</li>
+</ul>
+
+<p><strong>👉 A verdadeira defesa está em visibilidade, inteligência e correlação.</strong></p>
+
+<footer>
+<p>Fim do Capítulo 11 – Evasão de Segurança</p>
+</footer>
+
+</body>
+</html>
